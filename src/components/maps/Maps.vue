@@ -13,21 +13,79 @@
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Nome"></v-text-field>
+                  <v-text-field label="Nome" />
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-select
                     hint="Vamos meter ficha"
-                    :items="['0-17', '18-29', '30-54', '54+']"
+                    :iteds="['0-17', '18-29', '30-54', '54+']"
                     label="Distância (KM)"
-                  ></v-select>
+                  />
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-autocomplete
                     :items="['Pedalada', 'Corrida']"
                     label="Tipo"
                     multiple
-                  ></v-autocomplete>
+                  />
+                </v-col>
+                <v-col cols="12" sm=6>
+                  <v-dialog
+                    ref="dataDialog"
+                    v-model="modal1"
+                    :return-value.sync="date"
+                    persistent
+                    lazy
+                    full-width
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="date"
+                        label="Data"
+                        readonly
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-if="modal1"
+                      v-model="date"
+                      full-width
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn flat color="primary" @click="modal1 = false">Cancel</v-btn>
+                      <v-btn flat color="primary" @click="$refs.dataDialog.save(date)">OK</v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-col>
+                <v-col cols="12" sm=6>
+                  <v-dialog
+                    ref="timeDialog"
+                    v-model="modal2"
+                    :return-value.sync="time"
+                    persistent
+                    lazy
+                    full-width
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="time"
+                        label="Horário"
+                        readonly
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-time-picker
+                      v-if="modal2"
+                      v-model="time"
+                      full-width
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn flat color="primary" @click="modal2 = false">Cancel</v-btn>
+                      <v-btn flat color="primary" @click="$refs.timeDialog.save(time)">OK</v-btn>
+                    </v-time-picker>
+                  </v-dialog>
                 </v-col>
               </v-row>
             </v-container>
@@ -61,7 +119,14 @@ export default {
       filters: {
         name: null
       },
-      newEvent: null
+      newEvent: null,
+      datePicker: new Date().toISOString().substr(0, 10),
+      timePicker: null,
+      landscape: false,
+      modal1: false,
+      modal2: false,
+      date: null,
+      time: null
     }
   },
   methods: {
