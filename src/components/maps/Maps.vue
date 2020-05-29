@@ -7,129 +7,132 @@
       hide-details="auto"
     />
     <div ref="googleMaps" class="App"/>
-    <v-app id="inspire">
-    <v-row justify="center">
-      <v-dialog v-model="dialog" persistent max-width="600px">
-        <v-card>
-          <v-card-title>
-            <span class="headline">Informações do evento</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field label="Nome" />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select
-                    hint="Vamos meter ficha"
-                    :items="['0-17', '18-29', '30-54', '54+']"
-                    label="Distância (KM)"
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-autocomplete
-                    :items="['Pedalada', 'Corrida']"
-                    label="Tipo"
-                    multiple
-                  />
-                </v-col>
-                <v-col cols="12" sm=6>
-                  <v-dialog
-                    ref="dataDialog"
-                    v-model="dateModal"
-                    :return-value.sync="date"
-                    persistent
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
+    <v-app
+      id="inspire"
+      v-if="dialog"
+    >
+      <v-row justify="center">
+        <v-dialog v-model="dialog" persistent max-width="600px">
+          <v-card>
+            <v-card-title>
+              <span class="headline">Informações do evento</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field label="Nome" />
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-select
+                      hint="Vamos meter ficha"
+                      :items="['0-17', '18-29', '30-54', '54+']"
+                      label="Distância (KM)"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-autocomplete
+                      :items="['Pedalada', 'Corrida']"
+                      label="Tipo"
+                      multiple
+                    />
+                  </v-col>
+                  <v-col cols="12" sm=6>
+                    <v-dialog
+                      ref="dataDialog"
+                      v-model="dateModal"
+                      :return-value.sync="date"
+                      persistent
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="date"
+                          label="Data"
+                          readonly
+                          v-on="on"
+                        />
+                      </template>
+                      <v-date-picker
+                        v-if="dateModal"
                         v-model="date"
-                        label="Data"
-                        readonly
-                        v-on="on"
-                      />
-                    </template>
-                    <v-date-picker
-                      v-if="dateModal"
-                      v-model="date"
+                      >
+                        <v-spacer />
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="dateModal = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dataDialog.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
+                  </v-col>
+                  <v-col cols="12" sm=6>
+                    <v-dialog
+                      ref="timeDialog"
+                      v-model="timeModal"
+                      :return-value.sync="time"
+                      persistent
                     >
-                      <v-spacer />
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="dateModal = false"
-                      >
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.dataDialog.save(date)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
-                </v-col>
-                <v-col cols="12" sm=6>
-                  <v-dialog
-                    ref="timeDialog"
-                    v-model="timeModal"
-                    :return-value.sync="time"
-                    persistent
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="time"
+                          label="Horário"
+                          readonly
+                          v-on="on"
+                        />
+                      </template>
+                      <v-time-picker
+                        v-if="timeModal"
                         v-model="time"
-                        label="Horário"
-                        readonly
-                        v-on="on"
-                      />
-                    </template>
-                    <v-time-picker
-                      v-if="timeModal"
-                      v-model="time"
-                    >
-                      <v-spacer />
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="timeModal = false"
                       >
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        text
-                        color="primary"
-                        @click="$refs.timeDialog.save(time)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-time-picker>
-                  </v-dialog>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="blue darken-1"
-              text @click="dialog = false"
-            >
-              Fechar
-            </v-btn>
-            <v-btn
-              color="blue darken-1"
-              text @click="addMarker"
-            >
-              Criar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-  </v-app>
+                        <v-spacer />
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="timeModal = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.timeDialog.save(time)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-time-picker>
+                    </v-dialog>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                color="blue darken-1"
+                text @click="dialog = false"
+              >
+                Fechar
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text @click="addMarker"
+              >
+                Criar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </v-app>
   </div>
 </template>
 
