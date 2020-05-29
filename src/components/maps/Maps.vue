@@ -43,6 +43,7 @@
                       v-model="dateModal"
                       :return-value.sync="date"
                       persistent
+                      max-width="290"
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
@@ -80,6 +81,7 @@
                       v-model="timeModal"
                       :return-value.sync="time"
                       persistent
+                      max-width="290"
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
