@@ -41,7 +41,8 @@ export default {
       const googleMaps = this.$refs.googleMaps
 
       const myOptions = {
-        zoom: 12
+        zoom: 12,
+        disableDoubleClickZoom: false
       }
 
       this.map = new this.google.maps.Map(googleMaps, myOptions)
@@ -67,6 +68,16 @@ export default {
     } catch (error) {
       console.error(error)
     }
+
+    let context = this
+
+    this.map.addListener('dblclick', function (e) {
+      let latitude = e.latLng.lat()
+      let longitude = e.latLng.lng()
+      const icon = '../../static/img/bicycle1.png'
+      const markerCreated = new context.google.maps.Marker({position: { lat: latitude, lng: longitude }, icon: icon, title: 'Pedal do Pedrão'})
+      markerCreated.setMap(context.map)
+    })
   }
 }
 </script>
