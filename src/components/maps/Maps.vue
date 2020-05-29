@@ -1,6 +1,11 @@
 <template>
   <div>
-    <input type="text" v-model="filters.name" @keyup.enter="filter">
+    <v-text-field
+      label="Escreva aqui a cidade que busca"
+      v-model="filters.name"
+      @keyup.enter="filter"
+      hide-details="auto"
+    />
     <div ref="googleMaps" class="App"/>
     <v-app id="inspire">
     <v-row justify="center">
@@ -35,7 +40,6 @@
                     v-model="dateModal"
                     :return-value.sync="date"
                     persistent
-                    width="290px"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
@@ -43,15 +47,27 @@
                         label="Data"
                         readonly
                         v-on="on"
-                      ></v-text-field>
+                      />
                     </template>
                     <v-date-picker
                       v-if="dateModal"
                       v-model="date"
                     >
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
-                      <v-btn text color="primary" @click="$refs.dataDialog.save(date)">OK</v-btn>
+                      <v-spacer />
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="dateModal = false"
+                      >
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.dataDialog.save(date)"
+                      >
+                        OK
+                      </v-btn>
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
@@ -61,7 +77,6 @@
                     v-model="timeModal"
                     :return-value.sync="time"
                     persistent
-                    width="290px"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
@@ -69,15 +84,27 @@
                         label="Horário"
                         readonly
                         v-on="on"
-                      ></v-text-field>
+                      />
                     </template>
                     <v-time-picker
                       v-if="timeModal"
                       v-model="time"
                     >
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="timeModal = false">Cancel</v-btn>
-                      <v-btn text color="primary" @click="$refs.timeDialog.save(time)">OK</v-btn>
+                      <v-spacer />
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="timeModal = false"
+                      >
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.timeDialog.save(time)"
+                      >
+                        OK
+                      </v-btn>
                     </v-time-picker>
                   </v-dialog>
                 </v-col>
@@ -85,9 +112,19 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="dialog = false">Fechar</v-btn>
-            <v-btn color="blue darken-1" text @click="addMarker">Criar</v-btn>
+            <v-spacer />
+            <v-btn
+              color="blue darken-1"
+              text @click="dialog = false"
+            >
+              Fechar
+            </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text @click="addMarker"
+            >
+              Criar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -190,7 +227,7 @@ body {
 }
 
 .App {
-  width: 100vw;
-  height: 88vh;
+  width: 99vw;
+  height: 84vh;
 }
 </style>
