@@ -18,7 +18,7 @@
                 <v-col cols="12" sm="6">
                   <v-select
                     hint="Vamos meter ficha"
-                    :iteds="['0-17', '18-29', '30-54', '54+']"
+                    :items="['0-17', '18-29', '30-54', '54+']"
                     label="Distância (KM)"
                   />
                 </v-col>
@@ -32,11 +32,9 @@
                 <v-col cols="12" sm=6>
                   <v-dialog
                     ref="dataDialog"
-                    v-model="modal1"
+                    v-model="dateModal"
                     :return-value.sync="date"
                     persistent
-                    lazy
-                    full-width
                     width="290px"
                   >
                     <template v-slot:activator="{ on }">
@@ -48,24 +46,21 @@
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                      v-if="modal1"
+                      v-if="dateModal"
                       v-model="date"
-                      full-width
                     >
                       <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="modal1 = false">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="$refs.dataDialog.save(date)">OK</v-btn>
+                      <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
+                      <v-btn text color="primary" @click="$refs.dataDialog.save(date)">OK</v-btn>
                     </v-date-picker>
                   </v-dialog>
                 </v-col>
                 <v-col cols="12" sm=6>
                   <v-dialog
                     ref="timeDialog"
-                    v-model="modal2"
+                    v-model="timeModal"
                     :return-value.sync="time"
                     persistent
-                    lazy
-                    full-width
                     width="290px"
                   >
                     <template v-slot:activator="{ on }">
@@ -77,13 +72,12 @@
                       ></v-text-field>
                     </template>
                     <v-time-picker
-                      v-if="modal2"
+                      v-if="timeModal"
                       v-model="time"
-                      full-width
                     >
                       <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="modal2 = false">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="$refs.timeDialog.save(time)">OK</v-btn>
+                      <v-btn text color="primary" @click="timeModal = false">Cancel</v-btn>
+                      <v-btn text color="primary" @click="$refs.timeDialog.save(time)">OK</v-btn>
                     </v-time-picker>
                   </v-dialog>
                 </v-col>
@@ -120,11 +114,8 @@ export default {
         name: null
       },
       newEvent: null,
-      datePicker: new Date().toISOString().substr(0, 10),
-      timePicker: null,
-      landscape: false,
-      modal1: false,
-      modal2: false,
+      dateModal: false,
+      timeModal: false,
       date: null,
       time: null
     }
