@@ -63,7 +63,7 @@
                           color="primary"
                           @click="dateModal = false"
                         >
-                          Cancel
+                          Cancelar
                         </v-btn>
                         <v-btn
                           text
@@ -101,7 +101,7 @@
                           color="primary"
                           @click="timeModal = false"
                         >
-                          Cancel
+                          Cancelar
                         </v-btn>
                         <v-btn
                           text
@@ -140,6 +140,7 @@
 
 <script>
 import gmapsInit from '@/utils/gmaps'
+import events from '@/utils/markers'
 import Vue from 'vue'
 import VueGeolocation from 'vue-browser-geolocation'
 Vue.use(VueGeolocation)
@@ -217,6 +218,14 @@ export default {
       this.map.setCenter(myPlace)
 
       this.map.addListener('dblclick', this.openModal)
+
+      // Adicionando alguns eventos temporários
+      for (const event of events) {
+        const markerCreated = new this.google.maps.Marker(event)
+        markerCreated.setMap(this.map)
+        this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+      }
+      // Adicionando alguns eventos temporários
     } catch (error) {
       console.error(error)
     }

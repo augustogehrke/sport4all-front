@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <span>Faça suas atividades acompanhado(a)</span>
+      <span>Unindo atletas por uma paixão</span>
     </header>
     <main>
       <router-view></router-view>
