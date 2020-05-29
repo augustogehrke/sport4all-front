@@ -14,7 +14,8 @@
   "dependencies": {
     "vue": "^2.5.2",
     "vue-browser-geolocation": "^1.8.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuetify": "^2.2.30"
   },
   "devDependencies": {
     "@vue/cli-plugin-unit-jest": "^4.3.1",

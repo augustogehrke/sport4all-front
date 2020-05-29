@@ -2,6 +2,45 @@
   <div>
     <input type="text" v-model="filters.name" @keyup.enter="filter">
     <div ref="googleMaps" class="App"/>
+    <v-app id="inspire">
+    <v-row justify="center">
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Informações do evento</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field label="Nome"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    hint="Vamos meter ficha"
+                    :items="['0-17', '18-29', '30-54', '54+']"
+                    label="Distância (KM)"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-autocomplete
+                    :items="['Pedalada', 'Corrida']"
+                    label="Tipo"
+                    multiple
+                  ></v-autocomplete>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="dialog = false">Fechar</v-btn>
+            <v-btn color="blue darken-1" text @click="addMarker">Criar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+  </v-app>
   </div>
 </template>
 
@@ -14,12 +53,15 @@ export default {
   name: 'Maps',
   data () {
     return {
+      events: [],
+      dialog: false,
       google: null,
       map: null,
       geocoder: null,
       filters: {
         name: null
-      }
+      },
+      newEvent: null
     }
   },
   methods: {
@@ -32,6 +74,27 @@ export default {
         this.map.setCenter(results[0].geometry.location)
         this.map.fitBounds(results[0].geometry.viewport)
       })
+    },
+    async openModal (event) {
+      this.newEvent = event
+      this.dialog = true
+    },
+    async addMarker () {
+      const icon = '../../static/img/bike.png'
+      const lat = this.newEvent.latLng.lat()
+      const lng = this.newEvent.latLng.lng()
+      const markerCreated = new this.google.maps.Marker({position: { lat, lng }, icon, title: 'Pedal do Pedrão'})
+      markerCreated.setMap(this.map)
+
+      this.dialog = false
+      this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+    },
+    async openEvent (event) {
+      const lat = event.latLng.lat()
+      const lng = event.latLng.lng()
+      console.log(lat)
+      console.log(lng)
+      // buscar no array events as informações
     }
   },
   async mounted () {
@@ -42,42 +105,23 @@ export default {
 
       const myOptions = {
         zoom: 12,
-        disableDoubleClickZoom: false
+        disableDoubleClickZoom: true
       }
 
       this.map = new this.google.maps.Map(googleMaps, myOptions)
 
-      const marker = new this.google.maps.Marker({ position: { lat: -29.6814, lng: -53.8008 }, icon: '../../static/img/bicycle1.png', title: 'Pedal do Gutão' })
-      marker.setMap(this.map)
-      const marker2 = new this.google.maps.Marker({ position: { lat: -29.6929, lng: -53.8003 }, icon: '../../static/img/bicycle1.png', title: 'Pedal do Gutão' })
-      marker2.setMap(this.map)
-      const marker3 = new this.google.maps.Marker({ position: { lat: -29.6919, lng: -53.8203 }, icon: '../../static/img/bicycle1.png', title: 'Pedal do Gutão' })
-      marker3.setMap(this.map)
-      const marker4 = new this.google.maps.Marker({ position: { lat: -29.6979, lng: -53.8403 }, icon: '../../static/img/bicycle1.png', title: 'Pedal do Gutão' })
-      marker4.setMap(this.map)
-      const marker5 = new this.google.maps.Marker({ position: { lat: -29.6879, lng: -53.8503 }, icon: '../../static/img/bicycle1.png', title: 'Pedal do Gutão' })
-      marker5.setMap(this.map)
-
       const options = { enableHighAccuracy: true }
-      const coordinates = await this.$getLocation(options).then(coordinates => {
+      const { lat, lng } = await this.$getLocation(options).then(coordinates => {
         return coordinates
       })
 
-      const myPlace = new this.google.maps.LatLng(coordinates.lat, coordinates.lng)
+      const myPlace = new this.google.maps.LatLng(lat, lng)
       this.map.setCenter(myPlace)
+
+      this.map.addListener('dblclick', this.openModal)
     } catch (error) {
       console.error(error)
     }
-
-    let context = this
-
-    this.map.addListener('dblclick', function (e) {
-      let latitude = e.latLng.lat()
-      let longitude = e.latLng.lng()
-      const icon = '../../static/img/bicycle1.png'
-      const markerCreated = new context.google.maps.Marker({position: { lat: latitude, lng: longitude }, icon: icon, title: 'Pedal do Pedrão'})
-      markerCreated.setMap(context.map)
-    })
   }
 }
 </script>
