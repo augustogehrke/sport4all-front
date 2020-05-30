@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-text-field
-      label="Escreva aqui a cidade que busca"
+      label="Cidade desejada"
       v-model="filters.name"
       @keyup.enter="filter"
       hide-details="auto"
@@ -20,34 +20,42 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12">
-                    <v-text-field label="Nome" />
+                  <v-col cols="12" sm="6">
+                    <v-text-field v-model="event.name" label="Nome" />
                   </v-col>
                   <v-col cols="12" sm="6">
                     <v-select
+                      v-model="event.distance"
                       hint="Vamos meter ficha"
-                      :items="['0-17', '18-29', '30-54', '54+']"
+                      :items="['0-6', '7-17', '18-29', '30-54', '54+']"
                       label="Distância (KM)"
                     />
                   </v-col>
                   <v-col cols="12" sm="6">
                     <v-autocomplete
+                      v-model="event.type"
                       :items="['Pedalada', 'Corrida']"
                       label="Tipo"
-                      multiple
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-autocomplete
+                      v-model="event.pace"
+                      :items="['Leve', 'Moderado', 'Acelerado']"
+                      label="Ritmo"
                     />
                   </v-col>
                   <v-col cols="12" sm=6>
                     <v-dialog
                       ref="dataDialog"
                       v-model="dateModal"
-                      :return-value.sync="date"
+                      :return-value.sync="event.date"
                       persistent
                       max-width="290"
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="date"
+                          v-model="event.date"
                           label="Data"
                           readonly
                           v-on="on"
@@ -55,7 +63,7 @@
                       </template>
                       <v-date-picker
                         v-if="dateModal"
-                        v-model="date"
+                        v-model="event.date"
                       >
                         <v-spacer />
                         <v-btn
@@ -68,7 +76,7 @@
                         <v-btn
                           text
                           color="primary"
-                          @click="$refs.dataDialog.save(date)"
+                          @click="$refs.dataDialog.save(event.date)"
                         >
                           OK
                         </v-btn>
@@ -79,13 +87,13 @@
                     <v-dialog
                       ref="timeDialog"
                       v-model="timeModal"
-                      :return-value.sync="time"
+                      :return-value.sync="event.time"
                       persistent
                       max-width="290"
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="time"
+                          v-model="event.time"
                           label="Horário"
                           readonly
                           v-on="on"
@@ -93,7 +101,7 @@
                       </template>
                       <v-time-picker
                         v-if="timeModal"
-                        v-model="time"
+                        v-model="event.time"
                       >
                         <v-spacer />
                         <v-btn
@@ -106,12 +114,15 @@
                         <v-btn
                           text
                           color="primary"
-                          @click="$refs.timeDialog.save(time)"
+                          @click="$refs.timeDialog.save(event.time)"
                         >
                           OK
                         </v-btn>
                       </v-time-picker>
                     </v-dialog>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea v-model="event.observation" rows="3" label="Observação" />
                   </v-col>
                 </v-row>
               </v-container>
@@ -145,6 +156,19 @@ export default {
   name: 'Maps',
   data () {
     return {
+      event: {
+        name: null,
+        distance: null,
+        type: null,
+        pace: null,
+        observation: null,
+        date: null,
+        time: null,
+        coordinates: {
+          lat: null,
+          lng: null
+        }
+      },
       events: [],
       dialog: false,
       google: null,
@@ -153,11 +177,9 @@ export default {
       filters: {
         name: null
       },
-      newEvent: null,
+      newMapsEvent: null,
       dateModal: false,
-      timeModal: false,
-      date: null,
-      time: null
+      timeModal: false
     }
   },
   methods: {
@@ -172,31 +194,56 @@ export default {
       })
     },
     async openModal (event) {
-      this.newEvent = event
+      this.newMapsEvent = event
       this.dialog = true
     },
     async addMarker () {
       const icon = '../../static/img/bike.png'
-      const lat = this.newEvent.latLng.lat()
-      const lng = this.newEvent.latLng.lng()
+      const lat = this.newMapsEvent.latLng.lat()
+      const lng = this.newMapsEvent.latLng.lng()
       const markerCreated = new this.google.maps.Marker({position: { lat, lng }, icon, title: 'Pedal do Pedrão'})
       markerCreated.setMap(this.map)
 
       this.dialog = false
       this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+      this.event.coordinates = { lat, lng }
+      this.events.push(this.event)
+      this.resetEvent()
     },
-    async openEvent (event) {
-      const lat = event.latLng.lat()
-      const lng = event.latLng.lng()
-      console.log(lat)
-      console.log(lng)
-      // buscar no array events as informações
+    async resetEvent () {
+      this.event = {
+        name: null,
+        distance: null,
+        type: null,
+        pace: null,
+        observation: null,
+        date: null,
+        time: null,
+        coordinates: {
+          lat: null,
+          lng: null
+        }
+      }
+    },
+    async openEvent (googleEvent) {
+      const lat = googleEvent.latLng.lat()
+      const lng = googleEvent.latLng.lng()
+      const event = this.events.find(event => {
+        return event.coordinates.lat === lat && event.coordinates.lng === lng
+      })
+
+      if (event) {
+        this.event = event
+        this.dialog = true
+      } else {
+        alert('Evento não encontrado')
+      }
     },
     async currentLocation () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(this.markCurrentLocation)
       } else {
-        console.log('Geolocalização não suportada nesse navegador.')
+        alert('Geolocalização não suportada nesse navegador.')
       }
     },
     async markCurrentLocation (position) {
