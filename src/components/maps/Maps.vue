@@ -141,9 +141,6 @@
 <script>
 import gmapsInit from '@/utils/gmaps'
 import events from '@/utils/markers'
-import Vue from 'vue'
-import VueGeolocation from 'vue-browser-geolocation'
-Vue.use(VueGeolocation)
 export default {
   name: 'Maps',
   data () {
@@ -194,6 +191,19 @@ export default {
       console.log(lat)
       console.log(lng)
       // buscar no array events as informações
+    },
+    async currentLocation () {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(this.markCurrentLocation)
+      } else {
+        console.log('Geolocalização não suportada nesse navegador.')
+      }
+    },
+    async markCurrentLocation (position) {
+      const lat = position.coords.latitude
+      const lng = position.coords.longitude
+      const myPlace = new this.google.maps.LatLng(lat, lng)
+      this.map.setCenter(myPlace)
     }
   },
   async mounted () {
@@ -208,16 +218,14 @@ export default {
       }
 
       this.map = new this.google.maps.Map(googleMaps, myOptions)
+      this.map.addListener('dblclick', this.openModal)
 
-      const options = { enableHighAccuracy: true }
-      const { lat, lng } = await this.$getLocation(options).then(coordinates => {
-        return coordinates
-      })
-
-      const myPlace = new this.google.maps.LatLng(lat, lng)
+      // Adiciona SM como centro do mapa
+      const myPlace = new this.google.maps.LatLng(-29.690079577978533, -53.787586782282276)
       this.map.setCenter(myPlace)
 
-      this.map.addListener('dblclick', this.openModal)
+      // Pega a localização atual quando permitido
+      this.currentLocation()
 
       // Adicionando alguns eventos temporários
       for (const event of events) {
