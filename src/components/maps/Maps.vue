@@ -6,7 +6,7 @@
       @keyup.enter="filter"
       hide-details="auto"
     />
-    <div ref="googleMaps" class="App"/>
+    <div ref="googleMaps" class="map"/>
     <v-app
       id="inspire"
       v-if="dialog"
@@ -153,7 +153,7 @@
 import gmapsInit from '@/utils/gmaps'
 import events from '@/utils/markers'
 export default {
-  name: 'Maps',
+  name: 'maps',
   data () {
     return {
       event: {
@@ -288,15 +288,9 @@ export default {
 }
 </script>
 
-<style>
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
-
-.App {
-  width: 99vw;
-  height: 84vh;
-}
+<style scoped>
+  .map {
+    width: 99vw;
+    height: 70vh;
+  }
 </style>

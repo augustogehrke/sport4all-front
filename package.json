@@ -12,6 +12,7 @@
     "start": "node build/dev-server.js"
   },
   "dependencies": {
+    "@mdi/font": "^5.3.45",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^2.2.30"
