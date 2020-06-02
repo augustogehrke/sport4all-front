@@ -1,11 +1,61 @@
 <template>
   <div>
-    <v-text-field
-      label="Cidade desejada"
-      v-model="filters.name"
-      @keyup.enter="filter"
-      hide-details="auto"
-    />
+    <v-container>
+      <v-row no-gutters>
+        <v-col
+          cols="12"
+          sm="4"
+        >
+          <h2 class="title">Tipo</h2>
+          <v-chip-group
+            v-model="filters.type"
+            column
+          >
+            <v-chip filter outlined>Pedalada</v-chip>
+            <v-chip filter outlined>Corrida</v-chip>
+          </v-chip-group>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="4"
+        >
+          <h2 class="title">Ritmo</h2>
+
+          <v-chip-group
+            v-model="filters.pace"
+            column
+            multiple
+          >
+            <v-chip filter outlined>Leve</v-chip>
+            <v-chip filter outlined>Moderado</v-chip>
+            <v-chip filter outlined>Acelerado</v-chip>
+          </v-chip-group>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="4"
+        >
+          <h2 class="title">Distância</h2>
+          <v-chip-group
+            v-model="filters.distance"
+            column
+            multiple
+          >
+            <v-chip filter outlined>0-6</v-chip>
+            <v-chip filter outlined>7-17</v-chip>
+            <v-chip filter outlined>18-29</v-chip>
+            <v-chip filter outlined>30-54</v-chip>
+            <v-chip filter outlined>54+</v-chip>
+          </v-chip-group>
+        </v-col>
+      </v-row>
+      <v-text-field
+        label="Cidade desejada"
+        v-model="filters.city"
+        @keyup.enter="filter"
+        hide-details="auto"
+      />
+    </v-container>
     <div ref="googleMaps" class="map"/>
     <v-app
       id="inspire"
@@ -21,7 +71,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6">
-                    <v-text-field v-model="event.name" label="Nome" />
+                    <v-text-field v-model="event.title" label="Nome" />
                   </v-col>
                   <v-col cols="12" sm="6">
                     <v-select
@@ -157,25 +207,28 @@ export default {
   data () {
     return {
       event: {
-        name: null,
+        title: null,
         distance: null,
         type: null,
         pace: null,
         observation: null,
         date: null,
         time: null,
-        coordinates: {
+        position: {
           lat: null,
           lng: null
         }
       },
-      events: [],
+      allEvents: [],
       dialog: false,
       google: null,
       map: null,
       geocoder: null,
       filters: {
-        name: null
+        city: null,
+        pace: null,
+        type: null,
+        distance: null
       },
       newMapsEvent: null,
       dateModal: false,
@@ -184,7 +237,7 @@ export default {
   },
   methods: {
     async filter () {
-      this.geocoder.geocode({ address: this.filters.name }, (results, status) => {
+      this.geocoder.geocode({ address: this.filters.city }, (results, status) => {
         if (status !== 'OK' || !results[0]) {
           throw new Error(status)
         }
@@ -194,6 +247,7 @@ export default {
       })
     },
     async openModal (event) {
+      this.resetEvent()
       this.newMapsEvent = event
       this.dialog = true
     },
@@ -201,25 +255,25 @@ export default {
       const icon = '../../static/img/bike.png'
       const lat = this.newMapsEvent.latLng.lat()
       const lng = this.newMapsEvent.latLng.lng()
-      const markerCreated = new this.google.maps.Marker({position: { lat, lng }, icon, title: 'Pedal do Pedrão'})
+      const markerCreated = new this.google.maps.Marker({ position: { lat, lng }, icon, title: this.event.title })
       markerCreated.setMap(this.map)
 
       this.dialog = false
       this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
-      this.event.coordinates = { lat, lng }
-      this.events.push(this.event)
+      this.event.position = { lat, lng }
+      this.allEvents.push(this.event)
       this.resetEvent()
     },
     async resetEvent () {
       this.event = {
-        name: null,
+        title: null,
         distance: null,
         type: null,
         pace: null,
         observation: null,
         date: null,
         time: null,
-        coordinates: {
+        position: {
           lat: null,
           lng: null
         }
@@ -228,8 +282,8 @@ export default {
     async openEvent (googleEvent) {
       const lat = googleEvent.latLng.lat()
       const lng = googleEvent.latLng.lng()
-      const event = this.events.find(event => {
-        return event.coordinates.lat === lat && event.coordinates.lng === lng
+      const event = this.allEvents.find(event => {
+        return event.position.lat === lat && event.position.lng === lng
       })
 
       if (event) {
@@ -275,6 +329,7 @@ export default {
       this.currentLocation()
 
       // Adicionando alguns eventos temporários
+      this.allEvents = events
       for (const event of events) {
         const markerCreated = new this.google.maps.Marker(event)
         markerCreated.setMap(this.map)
@@ -291,6 +346,6 @@ export default {
 <style scoped>
   .map {
     width: 99vw;
-    height: 70vh;
+    height: 60vh;
   }
 </style>
