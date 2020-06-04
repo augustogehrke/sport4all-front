@@ -11,8 +11,8 @@
             v-model="filters.type"
             column
           >
-            <v-chip filter outlined>Pedalada</v-chip>
-            <v-chip filter outlined>Corrida</v-chip>
+            <v-chip value="Pedalada" filter outlined>Pedalada</v-chip>
+            <v-chip value="Corrida" filter outlined>Corrida</v-chip>
           </v-chip-group>
         </v-col>
         <v-col
@@ -24,11 +24,10 @@
           <v-chip-group
             v-model="filters.pace"
             column
-            multiple
           >
-            <v-chip filter outlined>Leve</v-chip>
-            <v-chip filter outlined>Moderado</v-chip>
-            <v-chip filter outlined>Acelerado</v-chip>
+            <v-chip value="Leve" filter outlined>Leve</v-chip>
+            <v-chip value="Moderado" filter outlined>Moderado</v-chip>
+            <v-chip value="Acelerado" filter outlined>Acelerado</v-chip>
           </v-chip-group>
         </v-col>
         <v-col
@@ -39,19 +38,18 @@
           <v-chip-group
             v-model="filters.distance"
             column
-            multiple
           >
-            <v-chip filter outlined>0-6</v-chip>
-            <v-chip filter outlined>7-17</v-chip>
-            <v-chip filter outlined>18-29</v-chip>
-            <v-chip filter outlined>30-54</v-chip>
-            <v-chip filter outlined>54+</v-chip>
+            <v-chip value="0-6" filter outlined>0-6</v-chip>
+            <v-chip value="7-17" filter outlined>7-17</v-chip>
+            <v-chip value="18-29" filter outlined>18-29</v-chip>
+            <v-chip value="30-54" filter outlined>30-54</v-chip>
+            <v-chip value="54+" filter outlined>54+</v-chip>
           </v-chip-group>
         </v-col>
       </v-row>
       <v-text-field
         label="Cidade desejada"
-        v-model="filters.city"
+        v-model="city"
         @keyup.enter="filter"
         hide-details="auto"
       />
@@ -187,6 +185,12 @@
               </v-btn>
               <v-btn
                 color="blue darken-1"
+                text @click="deleteEvent"
+              >
+                Excluir
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
                 text @click="addMarker"
               >
                 Criar
@@ -207,6 +211,7 @@ export default {
   data () {
     return {
       event: {
+        id: null,
         title: null,
         distance: null,
         type: null,
@@ -217,7 +222,8 @@ export default {
         position: {
           lat: null,
           lng: null
-        }
+        },
+        googleMapsMarker: null
       },
       allEvents: [],
       dialog: false,
@@ -225,11 +231,11 @@ export default {
       map: null,
       geocoder: null,
       filters: {
-        city: null,
         pace: null,
         type: null,
         distance: null
       },
+      city: null,
       newMapsEvent: null,
       dateModal: false,
       timeModal: false
@@ -237,7 +243,7 @@ export default {
   },
   methods: {
     async filter () {
-      this.geocoder.geocode({ address: this.filters.city }, (results, status) => {
+      this.geocoder.geocode({ address: this.city }, (results, status) => {
         if (status !== 'OK' || !results[0]) {
           throw new Error(status)
         }
@@ -258,14 +264,18 @@ export default {
       const markerCreated = new this.google.maps.Marker({ position: { lat, lng }, icon, title: this.event.title })
       markerCreated.setMap(this.map)
 
-      this.dialog = false
       this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+
+      this.event.googleMapsMarker = markerCreated
       this.event.position = { lat, lng }
       this.allEvents.push(this.event)
+      // Adicionar o evento no banco de dados
       this.resetEvent()
+      this.dialog = false
     },
     async resetEvent () {
       this.event = {
+        id: null,
         title: null,
         distance: null,
         type: null,
@@ -276,7 +286,8 @@ export default {
         position: {
           lat: null,
           lng: null
-        }
+        },
+        googleMapsMarker: null
       }
     },
     async openEvent (googleEvent) {
@@ -305,6 +316,63 @@ export default {
       const lng = position.coords.longitude
       const myPlace = new this.google.maps.LatLng(lat, lng)
       this.map.setCenter(myPlace)
+    },
+    async deleteEvent () {
+      this.dialog = false
+      this.event.googleMapsMarker.setMap(null)
+      // TO DO: Deletar da lista allEvents e do banco de dados
+      this.resetEvent()
+    },
+    async addTemporariesEvents () {
+      this.allEvents = events
+      for (const id in events) {
+        const markerCreated = new this.google.maps.Marker(events[id])
+        markerCreated.setMap(this.map)
+        this.allEvents[id].googleMapsMarker = markerCreated
+        this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+      }
+    },
+    async applyFilters () {
+      const events = []
+      const nEvent = []
+      for (const event of this.allEvents) {
+        if (this.filters.type === 'Pedalada' || this.filters.type === 'Corrida') {
+          if (event.type !== this.filters.type) {
+            nEvent.push(event)
+            continue
+          }
+        }
+        if (this.filters.pace === 'Leve' || this.filters.pace === 'Moderado' || this.filters.pace === 'Acelerado') {
+          if (event.pace !== this.filters.pace) {
+            nEvent.push(event)
+            continue
+          }
+        }
+        if (this.filters.distance === '0-6' || this.filters.distance === '7-17' || this.filters.distance === '18-29' || this.filters.distance === '30-54' || this.filters.distance === '54+') {
+          if (event.distance !== this.filters.distance) {
+            nEvent.push(event)
+            continue
+          }
+        }
+
+        events.push(event)
+      }
+
+      for (const event of events) {
+        event.googleMapsMarker.setMap(this.map)
+      }
+
+      for (const event of nEvent) {
+        event.googleMapsMarker.setMap(null)
+      }
+    }
+  },
+  watch: {
+    filters: {
+      deep: true,
+      handler () {
+        this.applyFilters()
+      }
     }
   },
   async mounted () {
@@ -328,14 +396,7 @@ export default {
       // Pega a localização atual quando permitido
       this.currentLocation()
 
-      // Adicionando alguns eventos temporários
-      this.allEvents = events
-      for (const event of events) {
-        const markerCreated = new this.google.maps.Marker(event)
-        markerCreated.setMap(this.map)
-        this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
-      }
-      // Adicionando alguns eventos temporários
+      this.addTemporariesEvents()
     } catch (error) {
       console.error(error)
     }
