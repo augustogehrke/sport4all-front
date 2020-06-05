@@ -1,59 +1,12 @@
 <template>
   <div>
-    <v-container>
-      <v-row no-gutters>
-        <v-col
-          cols="12"
-          sm="4"
-        >
-          <h2 class="title">Tipo</h2>
-          <v-chip-group
-            v-model="filters.type"
-            column
-          >
-            <v-chip value="Pedalada" filter outlined>Pedalada</v-chip>
-            <v-chip value="Corrida" filter outlined>Corrida</v-chip>
-          </v-chip-group>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="4"
-        >
-          <h2 class="title">Ritmo</h2>
-
-          <v-chip-group
-            v-model="filters.pace"
-            column
-          >
-            <v-chip value="Leve" filter outlined>Leve</v-chip>
-            <v-chip value="Moderado" filter outlined>Moderado</v-chip>
-            <v-chip value="Acelerado" filter outlined>Acelerado</v-chip>
-          </v-chip-group>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="4"
-        >
-          <h2 class="title">Distância</h2>
-          <v-chip-group
-            v-model="filters.distance"
-            column
-          >
-            <v-chip value="0-6" filter outlined>0-6</v-chip>
-            <v-chip value="7-17" filter outlined>7-17</v-chip>
-            <v-chip value="18-29" filter outlined>18-29</v-chip>
-            <v-chip value="30-54" filter outlined>30-54</v-chip>
-            <v-chip value="54+" filter outlined>54+</v-chip>
-          </v-chip-group>
-        </v-col>
-      </v-row>
-      <v-text-field
-        label="Cidade desejada"
-        v-model="city"
-        @keyup.enter="filter"
-        hide-details="auto"
-      />
-    </v-container>
+    <filters-map :filters="filters"/>
+    <v-text-field
+      label="Cidade desejada"
+      v-model="city"
+      @keyup.enter="filter"
+      hide-details="auto"
+    />
     <div ref="googleMaps" class="map"/>
     <v-app
       id="inspire"
@@ -65,116 +18,7 @@
             <v-card-title>
               <span class="headline">Informações do evento</span>
             </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6">
-                    <v-text-field v-model="event.title" label="Nome" />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-select
-                      v-model="event.distance"
-                      hint="Vamos meter ficha"
-                      :items="['0-6', '7-17', '18-29', '30-54', '54+']"
-                      label="Distância (KM)"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-autocomplete
-                      v-model="event.type"
-                      :items="['Pedalada', 'Corrida']"
-                      label="Tipo"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-autocomplete
-                      v-model="event.pace"
-                      :items="['Leve', 'Moderado', 'Acelerado']"
-                      label="Ritmo"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm=6>
-                    <v-dialog
-                      ref="dataDialog"
-                      v-model="dateModal"
-                      :return-value.sync="event.date"
-                      persistent
-                      max-width="290"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="event.date"
-                          label="Data"
-                          readonly
-                          v-on="on"
-                        />
-                      </template>
-                      <v-date-picker
-                        v-if="dateModal"
-                        v-model="event.date"
-                      >
-                        <v-spacer />
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="dateModal = false"
-                        >
-                          Cancelar
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.dataDialog.save(event.date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-dialog>
-                  </v-col>
-                  <v-col cols="12" sm=6>
-                    <v-dialog
-                      ref="timeDialog"
-                      v-model="timeModal"
-                      :return-value.sync="event.time"
-                      persistent
-                      max-width="290"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="event.time"
-                          label="Horário"
-                          readonly
-                          v-on="on"
-                        />
-                      </template>
-                      <v-time-picker
-                        v-if="timeModal"
-                        v-model="event.time"
-                      >
-                        <v-spacer />
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="timeModal = false"
-                        >
-                          Cancelar
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.timeDialog.save(event.time)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-time-picker>
-                    </v-dialog>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-textarea v-model="event.observation" rows="3" label="Observação" />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+            <card-event-form :event="event"/>
             <v-card-actions>
               <v-spacer />
               <v-btn
@@ -206,8 +50,15 @@
 <script>
 import gmapsInit from '@/utils/gmaps'
 import events from '@/utils/markers'
+import FiltersMap from './FiltersMap'
+import CardEventForm from './CardEventForm'
+
 export default {
   name: 'maps',
+  components: {
+    FiltersMap,
+    CardEventForm
+  },
   data () {
     return {
       event: {
@@ -236,9 +87,7 @@ export default {
         distance: null
       },
       city: null,
-      newMapsEvent: null,
-      dateModal: false,
-      timeModal: false
+      newMapsEvent: null
     }
   },
   methods: {
@@ -323,7 +172,7 @@ export default {
       // TO DO: Deletar da lista allEvents e do banco de dados
       this.resetEvent()
     },
-    async addTemporariesEvents () {
+    async addEvents () {
       this.allEvents = events
       for (const id in events) {
         const markerCreated = new this.google.maps.Marker(events[id])
@@ -396,7 +245,7 @@ export default {
       // Pega a localização atual quando permitido
       this.currentLocation()
 
-      this.addTemporariesEvents()
+      this.addEvents()
     } catch (error) {
       console.error(error)
     }

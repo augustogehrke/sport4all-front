@@ -32,7 +32,7 @@ const markers = [
     date: '2020-06-05',
     time: '15:40',
     position: { lat: -29.68301906650666, lng: -53.81236104063423 },
-    icon: '../../static/img/run.png',
+    icon: '../../static/img/runner.png',
     title: 'Corrida do Zé'
   },
   {
@@ -44,7 +44,7 @@ const markers = [
     date: '2020-06-07',
     time: '15:40',
     position: { lat: -29.67301906650666, lng: -53.81336104063423 },
-    icon: '../../static/img/run.png',
+    icon: '../../static/img/runner.png',
     title: 'Corrida do João'
   }
 ]
