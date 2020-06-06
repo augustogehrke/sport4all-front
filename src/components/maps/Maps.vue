@@ -8,45 +8,83 @@
       hide-details="auto"
     />
     <div ref="googleMaps" class="map"/>
-    <v-app
-      id="inspire"
-      v-if="dialog"
-    >
-      <v-row justify="center">
-        <v-dialog v-model="dialog" persistent max-width="600px">
-          <v-card>
-            <v-card-title>
-              <span class="headline">Informações do evento</span>
-            </v-card-title>
-            <card-event-form :event="event"/>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn
-                color="blue darken-1"
-                text @click="dialog = false"
-              >
-                Fechar
-              </v-btn>
-              <v-btn
-                v-show="event.id"
-                color="blue darken-1"
-                text @click="deleteEvent"
-              >
-                Excluir
-              </v-btn>
-              <v-btn
-                v-show="!event.id"
-                :disabled="!formValid"
-                color="blue darken-1"
-                text @click="addMarker"
-              >
-                Criar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </v-app>
+    <v-dialog v-model="dialog"  max-width="700px">
+      <v-card>
+        <v-toolbar
+          color="blue darken-1"
+          dark
+          flat
+          prominent
+          class="not-space"
+        >
+          <v-tabs
+            slot="extension"
+            v-model="tabs"
+          >
+            <v-tab
+              :key="1"
+            >
+              Informações
+            </v-tab>
+            <v-tab
+              :key="2"
+            >
+              Rota
+            </v-tab>
+            <v-tab
+              :key="3"
+            >
+              Fotos
+            </v-tab>
+          </v-tabs>
+        </v-toolbar>
+        <v-tabs-items v-model="tabs">
+          <v-tab-item>
+            <v-card
+              class="mx-auto"
+            >
+              <event-info :event="event"/>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item>
+            <v-card
+              class="mx-auto"
+            >
+              <event-route/>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item>
+          <v-card class="mx-auto">
+              <event-photo/>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="blue darken-1"
+            text @click="dialog = false"
+          >
+            Fechar
+          </v-btn>
+          <v-btn
+            v-show="event.id"
+            color="blue darken-1"
+            text @click="deleteEvent"
+          >
+            Excluir
+          </v-btn>
+          <v-btn
+            v-show="!event.id"
+            :disabled="!formValid"
+            color="blue darken-1"
+            text @click="addMarker"
+          >
+            Criar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -55,16 +93,20 @@ import gmapsInit from '@/utils/gmaps'
 import events from '@/utils/markers'
 import styleMaps from '@/utils/styleMaps'
 import FiltersMap from './FiltersMap'
-import CardEventForm from './CardEventForm'
-
+import EventInfo from './EventInfo'
+import EventRoute from './EventRoute'
+import EventPhoto from './EventPhoto'
 export default {
   name: 'maps',
   components: {
     FiltersMap,
-    CardEventForm
+    EventInfo,
+    EventRoute,
+    EventPhoto
   },
   data () {
     return {
+      tabs: null,
       event: {
         id: null,
         title: null,
@@ -100,6 +142,12 @@ export default {
         return true
       }
       return false
+    },
+    iconEvent () {
+      if (this.event.type === 'Pedalada') {
+        return '../../static/img/bike.png'
+      }
+      return '../../static/img/runner.png'
     }
   },
   methods: {
@@ -119,10 +167,9 @@ export default {
       this.dialog = true
     },
     async addMarker () {
-      const icon = '../../static/img/bike.png'
       const lat = this.newMapsEvent.latLng.lat()
       const lng = this.newMapsEvent.latLng.lng()
-      const markerCreated = new this.google.maps.Marker({ position: { lat, lng }, icon, title: this.event.title })
+      const markerCreated = new this.google.maps.Marker({ position: { lat, lng }, icon: this.iconEvent, title: this.event.title })
       markerCreated.setMap(this.map)
 
       this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
@@ -271,5 +318,8 @@ export default {
   .map {
     width: 99vw;
     height: 60vh;
+  }
+  .not-space {
+    margin-top: -120px;
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-card-text>
+  <!-- <v-card-text> -->
     <v-container>
       <v-row>
         <v-col cols="12" sm="6">
@@ -17,6 +17,7 @@
         </v-col>
         <v-col cols="12" sm="6">
           <v-autocomplete
+            :rules="[rules.required]"
             :disabled="disabledFields"
             v-model="event.type"
             :items="['Pedalada', 'Corrida']"
@@ -25,6 +26,7 @@
         </v-col>
         <v-col cols="12" sm="6">
           <v-autocomplete
+            :rules="[rules.required]"
             :disabled="disabledFields"
             v-model="event.pace"
             :items="['Leve', 'Moderado', 'Acelerado']"
@@ -42,6 +44,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 :disabled="disabledFields"
+                :rules="[rules.required]"
                 v-model="event.date"
                 label="Data"
                 readonly
@@ -82,6 +85,7 @@
               <v-text-field
                 v-model="event.time"
                 :disabled="disabledFields"
+                :rules="[rules.required]"
                 label="Horário"
                 readonly
                 v-on="on"
@@ -110,16 +114,16 @@
           </v-dialog>
         </v-col>
         <v-col cols="12">
-          <v-textarea :disabled="disabledFields" v-model="event.observation" rows="3" label="Observação" />
+          <v-textarea maxlength="200" :counter="200" :disabled="disabledFields" v-model="event.observation" rows="3" label="Observação" />
         </v-col>
       </v-row>
     </v-container>
-  </v-card-text>
+  <!-- </v-card-text> -->
 </template>
 
 <script>
 export default {
-  name: 'card-event-form',
+  name: 'event-info',
   data () {
     return {
       dateModal: null,
