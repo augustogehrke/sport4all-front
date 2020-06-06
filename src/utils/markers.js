@@ -46,6 +46,18 @@ const markers = [
     position: { lat: -29.67301906650666, lng: -53.81336104063423 },
     icon: '../../static/img/runner.png',
     title: 'Corrida do João'
+  },
+  {
+    id: 5,
+    distance: '0-6',
+    type: 'Pedalada',
+    pace: 'Moderado',
+    observation: '',
+    date: '2020-06-07',
+    time: '15:40',
+    position: { lat: -30.019347493154434, lng: -52.89826338740235 },
+    icon: '../../static/img/bike.png',
+    title: 'Pedal Z'
   }
 ]
 

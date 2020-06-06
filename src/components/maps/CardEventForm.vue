@@ -3,10 +3,11 @@
     <v-container>
       <v-row>
         <v-col cols="12" sm="6">
-          <v-text-field maxlength="30" :counter="30" :rules="[rules.required]" v-model="event.title" label="Nome" />
+          <v-text-field :disabled="disabledFields" maxlength="30" :counter="30" :rules="[rules.required]" v-model="event.title" label="Nome" />
         </v-col>
         <v-col cols="12" sm="6">
           <v-select
+            :disabled="disabledFields"
             :rules="[rules.required]"
             v-model="event.distance"
             hint="Vamos meter ficha"
@@ -16,6 +17,7 @@
         </v-col>
         <v-col cols="12" sm="6">
           <v-autocomplete
+            :disabled="disabledFields"
             v-model="event.type"
             :items="['Pedalada', 'Corrida']"
             label="Tipo"
@@ -23,6 +25,7 @@
         </v-col>
         <v-col cols="12" sm="6">
           <v-autocomplete
+            :disabled="disabledFields"
             v-model="event.pace"
             :items="['Leve', 'Moderado', 'Acelerado']"
             label="Ritmo"
@@ -38,6 +41,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
+                :disabled="disabledFields"
                 v-model="event.date"
                 label="Data"
                 readonly
@@ -77,6 +81,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="event.time"
+                :disabled="disabledFields"
                 label="Horário"
                 readonly
                 v-on="on"
@@ -105,7 +110,7 @@
           </v-dialog>
         </v-col>
         <v-col cols="12">
-          <v-textarea v-model="event.observation" rows="3" label="Observação" />
+          <v-textarea :disabled="disabledFields" v-model="event.observation" rows="3" label="Observação" />
         </v-col>
       </v-row>
     </v-container>
@@ -122,6 +127,14 @@ export default {
       rules: {
         required: value => !!value || 'Preenchimento obrigatório'
       }
+    }
+  },
+  computed: {
+    disabledFields () {
+      if (this.event.id) {
+        return true
+      }
+      return false
     }
   },
   props: {

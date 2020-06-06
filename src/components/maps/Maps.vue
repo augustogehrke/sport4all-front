@@ -53,6 +53,7 @@
 <script>
 import gmapsInit from '@/utils/gmaps'
 import events from '@/utils/markers'
+import styleMaps from '@/utils/styleMaps'
 import FiltersMap from './FiltersMap'
 import CardEventForm from './CardEventForm'
 
@@ -95,7 +96,10 @@ export default {
   },
   computed: {
     formValid () {
-      return (this.event.title && this.event.distance && this.event.type && this.event.pace && this.event.date && this.event.time)
+      if (this.event.title && this.event.distance && this.event.type && this.event.pace && this.event.date && this.event.time) {
+        return true
+      }
+      return false
     }
   },
   methods: {
@@ -241,7 +245,8 @@ export default {
 
       const myOptions = {
         zoom: 12,
-        disableDoubleClickZoom: true
+        disableDoubleClickZoom: true,
+        styles: styleMaps
       }
 
       this.map = new this.google.maps.Map(googleMaps, myOptions)
