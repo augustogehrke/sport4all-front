@@ -3,10 +3,11 @@
     <v-container>
       <v-row>
         <v-col cols="12" sm="6">
-          <v-text-field v-model="event.title" label="Nome" />
+          <v-text-field maxlength="30" :counter="30" :rules="[rules.required]" v-model="event.title" label="Nome" />
         </v-col>
         <v-col cols="12" sm="6">
           <v-select
+            :rules="[rules.required]"
             v-model="event.distance"
             hint="Vamos meter ficha"
             :items="['0-6', '7-17', '18-29', '30-54', '54+']"
@@ -117,7 +118,10 @@ export default {
   data () {
     return {
       dateModal: null,
-      timeModal: null
+      timeModal: null,
+      rules: {
+        required: value => !!value || 'Preenchimento obrigatório'
+      }
     }
   },
   props: {

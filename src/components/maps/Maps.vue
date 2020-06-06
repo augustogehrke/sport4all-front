@@ -28,12 +28,15 @@
                 Fechar
               </v-btn>
               <v-btn
+                v-show="event.id"
                 color="blue darken-1"
                 text @click="deleteEvent"
               >
                 Excluir
               </v-btn>
               <v-btn
+                v-show="!event.id"
+                :disabled="!formValid"
                 color="blue darken-1"
                 text @click="addMarker"
               >
@@ -90,6 +93,11 @@ export default {
       newMapsEvent: null
     }
   },
+  computed: {
+    formValid () {
+      return (this.event.title && this.event.distance && this.event.type && this.event.pace && this.event.date && this.event.time)
+    }
+  },
   methods: {
     async filter () {
       this.geocoder.geocode({ address: this.city }, (results, status) => {
@@ -117,6 +125,7 @@ export default {
 
       this.event.googleMapsMarker = markerCreated
       this.event.position = { lat, lng }
+      this.event.id = 6
       this.allEvents.push(this.event)
       // Adicionar o evento no banco de dados
       this.resetEvent()
