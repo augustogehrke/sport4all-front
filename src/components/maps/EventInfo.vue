@@ -52,20 +52,22 @@
               />
             </template>
             <v-date-picker
+              color="#00BC"
+              locale="pt-BR"
               v-if="dateModal"
               v-model="event.date"
             >
               <v-spacer />
               <v-btn
                 text
-                color="primary"
+                color="#00BC"
                 @click="dateModal = false"
               >
                 Cancelar
               </v-btn>
               <v-btn
                 text
-                color="primary"
+                color="#00BC"
                 @click="$refs.dataDialog.save(event.date)"
               >
                 OK
@@ -92,20 +94,22 @@
               />
             </template>
             <v-time-picker
+              format="24hr"
+              color="#00BC"
               v-if="timeModal"
               v-model="event.time"
             >
               <v-spacer />
               <v-btn
                 text
-                color="primary"
+                color="#00BC"
                 @click="timeModal = false"
               >
                 Cancelar
               </v-btn>
               <v-btn
                 text
-                color="primary"
+                color="#00BC"
                 @click="$refs.timeDialog.save(event.time)"
               >
                 OK
