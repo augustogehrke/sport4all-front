@@ -1,13 +1,6 @@
 <template>
     <v-container>
       <v-row>
-        <v-col  cols="12" sm="6">
-          <v-img
-            src="../../../static/img/wip.jpg"
-            max-width="300"
-            max-height="300"
-          ></v-img>
-        </v-col>
         <v-col cols="12" sm="6">
            <v-alert
             dense
@@ -23,6 +16,13 @@
           >
             {{ message }}
           </v-alert>
+        </v-col>
+        <v-col  cols="12" sm="6">
+          <v-img
+            src="../../../static/img/wip.jpg"
+            max-width="300"
+            max-height="300"
+          ></v-img>
         </v-col>
       </v-row>
     </v-container>

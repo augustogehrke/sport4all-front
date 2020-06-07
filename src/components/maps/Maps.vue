@@ -8,7 +8,7 @@
       hide-details="auto"
     />
     <div ref="googleMaps" class="map"/>
-    <v-dialog v-model="dialog"  max-width="700px">
+    <v-dialog v-model="dialog" persistent max-width="650px">
       <v-card>
         <v-toolbar
           color="blue darken-1"
