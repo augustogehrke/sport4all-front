@@ -6,6 +6,7 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import '@mdi/font/css/materialdesignicons.css'
 import firebase from './plugins/firebase'
+import store from './store'
 Vue.prototype.$firebase = firebase
 
 Vue.config.productionTip = false
@@ -28,5 +29,6 @@ new Vue({
   router,
   vuetify,
   template: '<App/>',
+  store,
   components: { App }
 })
