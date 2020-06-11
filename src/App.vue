@@ -22,6 +22,14 @@
               <v-list-item-title @click="toSponsorsPage">Patrocinadores</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item link>
+            <v-list-item-action @click="toLoginPage">
+              <v-icon color="red darken-2" large>mdi-account-arrow-right-outline</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title @click="toLoginPage">Sair</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
 
@@ -74,6 +82,17 @@ export default {
     },
     toMapPage () {
       this.$router.push({ name: 'maps' })
+    },
+    toLoginPage () {
+      this.$router.push({ name: 'login' })
+    },
+    async logout () {
+      try {
+        const data = await this.$firebase.logout()
+        console.log(data)
+      } catch (error) {
+        alert('deu ruim')
+      }
     }
   }
 }

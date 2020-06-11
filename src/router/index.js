@@ -12,12 +12,18 @@ export default new Router({
     {
       path: '/',
       name: 'maps',
-      component: Maps
+      component: Maps,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/patrocinadores',
       name: 'sponsors',
-      component: Sponsors
+      component: Sponsors,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/login',
