@@ -12,16 +12,16 @@ Vue.prototype.$firebase = firebase
 Vue.config.productionTip = false
 
 // TO DO: validar se possui token
-// router.beforeEach((to, from, next) => {
-//   if (to.meta.requireAuth) {
-//     const token = localStorage.getItem('token')
-//     if (!token) {
-//       next({ name: 'login' })
-//     }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      next({ name: 'login' })
+    }
+  } else {
+    next()
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({

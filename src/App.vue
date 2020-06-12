@@ -23,11 +23,11 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-item link>
-            <v-list-item-action @click="toLoginPage">
+            <v-list-item-action @click="logout">
               <v-icon color="red darken-2" large>mdi-account-arrow-right-outline</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title @click="toLoginPage">Sair</v-list-item-title>
+              <v-list-item-title @click="logout">Sair</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -83,16 +83,12 @@ export default {
     toMapPage () {
       this.$router.push({ name: 'maps' })
     },
-    toLoginPage () {
-      this.$router.push({ name: 'login' })
-    },
     async logout () {
-      try {
-        const data = await this.$firebase.logout()
-        console.log(data)
-      } catch (error) {
-        alert('deu ruim')
-      }
+      this.$firebase.logout()
+      this.$store.commit('setName', null)
+      this.$store.commit('setPhoto', null)
+      this.$store.commit('setToken', null)
+      this.$router.push({ name: 'login' })
     }
   }
 }
