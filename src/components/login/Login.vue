@@ -14,12 +14,17 @@
         </v-btn>
       </div>
     </v-col>
+    <message ref="message"/>
   </v-row>
 </template>
 
 <script>
+import Message from '../Message'
 export default {
   name: 'login',
+  components: {
+    Message
+  },
   data () {
     return {
     }
@@ -29,28 +34,30 @@ export default {
   methods: {
     async loginGoogle () {
       try {
-        const user = await this.$firebase.loginGoogle()
-        console.log(user)
+        const { user } = await this.$firebase.loginGoogle()
+        this.$store.commit('setName', user.displayName)
+        this.$store.commit('setPhoto', user.photoURL)
+        const token = await this.$firebase.getTokenFirebase()
+        this.$store.commit('setToken', token)
         this.toHome()
       } catch (error) {
-        alert('deu ruim')
+        this.$refs.message.text = 'Oops, ocorreu um problema :('
+        this.$refs.message.color = 'error'
+        this.$refs.message.show = true
       }
     },
     async loginFacebok () {
       try {
-        const user = await this.$firebase.loginFacebook()
-        console.log(user)
+        const { user } = await this.$firebase.loginFacebook()
+        this.$store.commit('setName', user.displayName)
+        this.$store.commit('setPhoto', user.photoURL)
+        const token = await this.$firebase.getTokenFirebase()
+        this.$store.commit('setToken', token)
         this.toHome()
       } catch (error) {
-        alert('deu ruim')
-      }
-    },
-    async getTokenFirebase () {
-      try {
-        const token = await this.$firebase.getTokenFirebase()
-        console.log(token)
-      } catch (error) {
-        alert('deu ruim')
+        this.$refs.message.text = 'Oops, ocorreu um problema :('
+        this.$refs.message.color = 'error'
+        this.$refs.message.show = true
       }
     },
     async toHome () {

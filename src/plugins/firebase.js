@@ -23,43 +23,42 @@ class Firebase {
   }
 
   async loginFacebook () {
-    const provider = new firebase.auth.FacebookAuthProvider()
-    firebase.auth().signInWithPopup(provider).then((result) => {
-      return result
-    }).catch((error) => {
-      console.log(error)
-    })
+    try {
+      const provider = new firebase.auth.FacebookAuthProvider()
+      const user = await firebase.auth().signInWithPopup(provider)
+      return user
+    } catch (error) {
+      throw error
+    }
   }
 
   async loginGoogle () {
-    const provider = new firebase.auth.GoogleAuthProvider()
-    provider.addScope('profile')
-    provider.addScope('email')
-    firebase.auth().signInWithPopup(provider).then((result) => {
-      console.log(result)
-      const credencials = result.credential.toJSON()
-      console.log(credencials.oauthAccessToken)
-      console.log(credencials.oauthIdToken)
-      return result
-    }).catch((error) => {
-      return error
-    })
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider()
+      provider.addScope('profile')
+      const user = await firebase.auth().signInWithPopup(provider)
+      return user
+    } catch (error) {
+      throw error
+    }
   }
 
   async getTokenFirebase () {
-    firebase.auth().currentUser.getIdToken().then((idToken) => {
-      return idToken
-    }).catch((error) => {
-      return error
-    })
+    try {
+      const token = firebase.auth().currentUser.getIdToken()
+      return token
+    } catch (error) {
+      throw error
+    }
   }
 
   async logout () {
-    firebase.auth().signOut().then(() => {
+    try {
+      await firebase.auth().signOut()
       return true
-    }).catch((error) => {
-      return error
-    })
+    } catch (error) {
+      throw error
+    }
   }
 }
 
