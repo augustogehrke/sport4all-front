@@ -68,7 +68,7 @@
             Fechar
           </v-btn>
           <v-btn
-            v-show="event.id"
+            v-show="event.id && myEvent"
             color="blue darken-1"
             text @click="deleteEvent"
           >
@@ -120,7 +120,8 @@ export default {
           lat: null,
           lng: null
         },
-        googleMapsMarker: null
+        googleMapsMarker: null,
+        createdBy: null
       },
       allEvents: [],
       dialog: false,
@@ -148,6 +149,12 @@ export default {
         return '../../static/img/bike.png'
       }
       return '../../static/img/runner.png'
+    },
+    myEvent () {
+      if (this.$store.getters.user.uid === this.event.createdBy) {
+        return true
+      }
+      return false
     }
   },
   methods: {
@@ -177,6 +184,7 @@ export default {
       this.event.googleMapsMarker = markerCreated
       this.event.position = { lat, lng }
       this.event.id = 6
+      this.event.createdBy = this.$store.getters.user.uid
       this.allEvents.push(this.event)
       // Adicionar o evento no banco de dados
       this.resetEvent()
@@ -196,7 +204,8 @@ export default {
           lat: null,
           lng: null
         },
-        googleMapsMarker: null
+        googleMapsMarker: null,
+        createdBy: null
       }
     },
     async openEvent (googleEvent) {

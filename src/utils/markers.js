@@ -1,6 +1,7 @@
 const markers = [
   {
     id: 1,
+    createdBy: '0l77tMzuZ9crUgJSert',
     distance: '7-17',
     type: 'Pedalada',
     pace: 'Moderado',
@@ -13,6 +14,7 @@ const markers = [
   },
   {
     id: 2,
+    createdBy: 'ertezhODVNk12',
     distance: '54+',
     type: 'Pedalada',
     pace: 'Acelerado',
@@ -25,6 +27,7 @@ const markers = [
   },
   {
     id: 3,
+    createdBy: 'fgueu654f64567r',
     distance: '0-6',
     type: 'Corrida',
     pace: 'Leve',
@@ -37,6 +40,7 @@ const markers = [
   },
   {
     id: 4,
+    createdBy: 'fgueu654f64567r',
     distance: '7-17',
     type: 'Corrida',
     pace: 'Moderado',
@@ -49,6 +53,7 @@ const markers = [
   },
   {
     id: 5,
+    createdBy: 'fgueu654f64567r2',
     distance: '18-29',
     type: 'Pedalada',
     pace: 'Moderado',
