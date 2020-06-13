@@ -86,6 +86,7 @@ export default {
       this.$store.commit('setName', null)
       this.$store.commit('setPhoto', null)
       this.$store.commit('setToken', null)
+      this.$store.commit('setUid', null)
       this.$router.push({ name: 'login' })
     }
   }

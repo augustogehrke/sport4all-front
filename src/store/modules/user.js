@@ -1,7 +1,8 @@
 const state = {
   name: null,
   photo: null,
-  token: null
+  token: null,
+  uid: null
 }
 
 const mutations = {
@@ -13,6 +14,9 @@ const mutations = {
   },
   setToken (state, token) {
     state.token = token
+  },
+  setUid (state, uid) {
+    state.uid = uid
   }
 }
 
