@@ -3,11 +3,11 @@
     <v-container>
       <v-row>
         <v-col cols="12" sm="6">
-          <v-text-field :disabled="isNewEvent" maxlength="30" :counter="30" :rules="[rules.required]" v-model="event.title" label="Nome" />
+          <v-text-field :disabled="isOldEvent" maxlength="30" :counter="30" :rules="[rules.required]" v-model="event.title" label="Nome" />
         </v-col>
         <v-col cols="12" sm="6">
           <v-select
-            :disabled="isNewEvent"
+            :disabled="isOldEvent"
             :rules="[rules.required]"
             v-model="event.distance"
             hint="Vamos meter ficha"
@@ -18,7 +18,7 @@
         <v-col cols="12" sm="6">
           <v-autocomplete
             :rules="[rules.required]"
-            :disabled="isNewEvent"
+            :disabled="isOldEvent"
             v-model="event.type"
             :items="['Pedalada', 'Corrida']"
             label="Tipo"
@@ -27,7 +27,7 @@
         <v-col cols="12" sm="6">
           <v-autocomplete
             :rules="[rules.required]"
-            :disabled="isNewEvent"
+            :disabled="isOldEvent"
             v-model="event.pace"
             :items="['Leve', 'Moderado', 'Acelerado']"
             label="Ritmo"
@@ -43,7 +43,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                :disabled="isNewEvent"
+                :disabled="isOldEvent"
                 :rules="[rules.required]"
                 v-model="event.date"
                 label="Data"
@@ -86,7 +86,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="event.time"
-                :disabled="isNewEvent"
+                :disabled="isOldEvent"
                 :rules="[rules.required]"
                 label="Horário"
                 readonly
@@ -118,21 +118,16 @@
           </v-dialog>
         </v-col>
         <v-col cols="12">
-          <v-textarea maxlength="200" :counter="200" :disabled="isNewEvent" v-model="event.observation" rows="3" label="Observação" />
+          <v-textarea maxlength="200" :counter="200" :disabled="isOldEvent" v-model="event.observation" rows="3" label="Observação" />
         </v-col>
-        <event-participant v-if="isNewEvent"/>
       </v-row>
     </v-container>
   <!-- </v-card-text> -->
 </template>
 
 <script>
-import EventParticipant from './EventParcipant'
 export default {
   name: 'event-info',
-  components: {
-    EventParticipant
-  },
   data () {
     return {
       dateModal: null,
@@ -143,7 +138,7 @@ export default {
     }
   },
   computed: {
-    isNewEvent () {
+    isOldEvent () {
       if (this.event.id) {
         return true
       }
@@ -153,8 +148,21 @@ export default {
   props: {
     event: {
       type: Object,
-      default: function () {
-        return { id: null, title: null, distance: null, type: null, pace: null, observation: null, date: null, time: null }
+      default: {
+        id: null,
+        title: null,
+        distance: null,
+        type: null,
+        pace: null,
+        observation: null,
+        date: null,
+        time: null,
+        createdBy: null,
+        position: {
+          lat: null,
+          lng: null
+        },
+        googleMapsMarker: null
       }
     }
   }

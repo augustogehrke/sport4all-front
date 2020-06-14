@@ -14,7 +14,7 @@
 
 <script>
 import gmapsInit from '@/utils/gmaps'
-import events from '@/utils/markers'
+import events from '@/utils/events'
 import styleMaps from '@/utils/styleMaps'
 import FiltersMap from './FiltersMap'
 import Event from '@/components/events/Event'
@@ -196,8 +196,6 @@ export default {
   },
   async mounted () {
     try {
-      // this.$store.commit('setAll', events)
-      // this.allEvents = this.$store.getters.event.all
       this.allEvents = events
       this.google = await gmapsInit()
       this.geocoder = new this.google.maps.Geocoder()

@@ -28,12 +28,8 @@
 </template>
 
 <script>
-import Message from '../Message'
 export default {
   name: 'login',
-  components: {
-    Message
-  },
   data () {
     return {
     }
@@ -51,9 +47,7 @@ export default {
         this.$store.commit('setToken', token)
         this.toHome()
       } catch (error) {
-        this.$refs.message.text = 'Oops, ocorreu um problema :('
-        this.$refs.message.color = 'error'
-        this.$refs.message.show = true
+        // TO DO: mensagem de erro
       }
     },
     async loginFacebok () {
@@ -66,9 +60,7 @@ export default {
         this.$store.commit('setToken', token)
         this.toHome()
       } catch (error) {
-        this.$refs.message.text = 'Oops, ocorreu um problema :('
-        this.$refs.message.color = 'error'
-        this.$refs.message.show = true
+        // TO DO: mensagem de erro
       }
     },
     async toHome () {

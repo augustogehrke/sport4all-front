@@ -40,6 +40,7 @@
             class="mx-auto"
           >
             <event-info :event="event"/>
+            <event-participant :eventId="event.id"/>
           </v-card>
         </v-tab-item>
         <v-tab-item>
@@ -102,6 +103,7 @@ import EventInfo from '@/components/events/EventInfo'
 import EventRoute from '@/components/events/EventRoute'
 import EventPhoto from '@/components/events/EventPhoto'
 import EventChat from '@/components/events/EventChat'
+import EventParticipant from '@/components/events/EventParticipant'
 export default {
   name: 'event',
   data () {
@@ -113,7 +115,8 @@ export default {
     EventInfo,
     EventRoute,
     EventPhoto,
-    EventChat
+    EventChat,
+    EventParticipant
   },
   props: {
     event: {
