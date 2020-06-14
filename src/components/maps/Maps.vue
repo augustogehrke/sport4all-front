@@ -87,6 +87,13 @@
             Excluir
           </v-btn>
           <v-btn
+            v-show="event.id && !myEvent"
+            color="blue darken-1"
+            text @click="participateEvent"
+          >
+            Participar
+          </v-btn>
+          <v-btn
             v-show="!event.id"
             :disabled="!formValid"
             color="blue darken-1"
@@ -254,6 +261,9 @@ export default {
       this.event.googleMapsMarker.setMap(null)
       // TO DO: Deletar da lista allEvents e do banco de dados
       this.resetEvent()
+    },
+    async participateEvent () {
+      // TO DO
     },
     async addEvents () {
       this.allEvents = events
