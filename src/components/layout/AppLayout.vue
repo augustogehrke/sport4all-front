@@ -41,7 +41,7 @@
       <v-toolbar-title>Unindo atletas por uma paixão</v-toolbar-title>
     </v-app-bar>
 
-    <v-content>
+    <v-main>
       <v-container
         class="fill-height"
         fluid
@@ -53,7 +53,7 @@
           <router-view></router-view>
         </v-row>
       </v-container>
-    </v-content>
+    </v-main>
     <v-footer
       color="indigo"
       app

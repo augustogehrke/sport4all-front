@@ -8,102 +8,7 @@
       hide-details="auto"
     />
     <div ref="googleMaps" class="map"/>
-    <v-dialog v-model="dialog" persistent max-width="650px">
-      <v-card>
-        <v-toolbar
-          color="blue darken-1"
-          dark
-          flat
-          prominent
-          class="not-space"
-        >
-          <v-tabs
-            slot="extension"
-            v-model="tabs"
-          >
-            <v-tab
-              :key="1"
-            >
-              Informações
-            </v-tab>
-            <v-tab
-              :key="2"
-            >
-              Chat
-            </v-tab>
-            <v-tab
-              :key="3"
-            >
-              Rota
-            </v-tab>
-            <v-tab
-              :key="4"
-            >
-              Fotos
-            </v-tab>
-          </v-tabs>
-        </v-toolbar>
-        <v-tabs-items v-model="tabs">
-          <v-tab-item>
-            <v-card
-              class="mx-auto"
-            >
-              <event-info :event="event"/>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item>
-            <v-card
-              class="mx-auto"
-            >
-              <event-chat/>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item>
-            <v-card
-              class="mx-auto"
-            >
-              <event-route/>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item>
-          <v-card class="mx-auto">
-              <event-photo/>
-            </v-card>
-          </v-tab-item>
-        </v-tabs-items>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="blue darken-1"
-            text @click="dialog = false"
-          >
-            Fechar
-          </v-btn>
-          <v-btn
-            v-show="event.id && myEvent"
-            color="blue darken-1"
-            text @click="deleteEvent"
-          >
-            Excluir
-          </v-btn>
-          <v-btn
-            v-show="event.id && !myEvent"
-            color="blue darken-1"
-            text @click="participateEvent"
-          >
-            Participar
-          </v-btn>
-          <v-btn
-            v-show="!event.id"
-            :disabled="!formValid"
-            color="blue darken-1"
-            text @click="addMarker"
-          >
-            Criar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <event @add-marker="addMarker" :dialog.sync="dialog" :event="event"/>
   </div>
 </template>
 
@@ -112,22 +17,15 @@ import gmapsInit from '@/utils/gmaps'
 import events from '@/utils/markers'
 import styleMaps from '@/utils/styleMaps'
 import FiltersMap from './FiltersMap'
-import EventInfo from './EventInfo'
-import EventRoute from './EventRoute'
-import EventPhoto from './EventPhoto'
-import EventChat from './EventChat'
+import Event from '@/components/events/Event'
 export default {
   name: 'maps',
   components: {
     FiltersMap,
-    EventInfo,
-    EventRoute,
-    EventPhoto,
-    EventChat
+    Event
   },
   data () {
     return {
-      tabs: null,
       event: {
         id: null,
         title: null,
@@ -146,6 +44,7 @@ export default {
       },
       allEvents: [],
       dialog: false,
+      idEvent: null,
       google: null,
       map: null,
       geocoder: null,
@@ -154,28 +53,15 @@ export default {
         type: null,
         distance: null
       },
-      city: null,
-      newMapsEvent: null
+      city: null
     }
   },
   computed: {
-    formValid () {
-      if (this.event.title && this.event.distance && this.event.type && this.event.pace && this.event.date && this.event.time) {
-        return true
-      }
-      return false
-    },
     iconEvent () {
       if (this.event.type === 'Pedalada') {
         return '../../static/img/bike.png'
       }
       return '../../static/img/runner.png'
-    },
-    myEvent () {
-      if (this.$store.getters.user.uid === this.event.createdBy) {
-        return true
-      }
-      return false
     }
   },
   methods: {
@@ -192,22 +78,23 @@ export default {
     async openModal (event) {
       this.resetEvent()
       this.newMapsEvent = event
+      this.event.position.lat = event.latLng.lat()
+      this.event.position.lng = event.latLng.lng()
+      this.event.createdBy = this.$store.getters.user.uid
       this.dialog = true
     },
     async addMarker () {
-      const lat = this.newMapsEvent.latLng.lat()
-      const lng = this.newMapsEvent.latLng.lng()
-      const markerCreated = new this.google.maps.Marker({ position: { lat, lng }, icon: this.iconEvent, title: this.event.title })
+      const markerCreated = new this.google.maps.Marker({ position: this.event.position, icon: this.iconEvent, title: this.event.title })
       markerCreated.setMap(this.map)
 
       this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
 
       this.event.googleMapsMarker = markerCreated
-      this.event.position = { lat, lng }
+
+      // TO DO: Fazer a colocação do id automatico
       this.event.id = 6
-      this.event.createdBy = this.$store.getters.user.uid
       this.allEvents.push(this.event)
-      // Adicionar o evento no banco de dados
+      // TO DO: Adicionar o evento no banco de dados
       this.resetEvent()
       this.dialog = false
     },
@@ -237,8 +124,8 @@ export default {
       })
 
       if (event) {
-        this.event = event
         this.dialog = true
+        this.event = event
       } else {
         alert('Evento não encontrado')
       }
@@ -256,17 +143,7 @@ export default {
       const myPlace = new this.google.maps.LatLng(lat, lng)
       this.map.setCenter(myPlace)
     },
-    async deleteEvent () {
-      this.dialog = false
-      this.event.googleMapsMarker.setMap(null)
-      // TO DO: Deletar da lista allEvents e do banco de dados
-      this.resetEvent()
-    },
-    async participateEvent () {
-      // TO DO
-    },
     async addEvents () {
-      this.allEvents = events
       for (const id in events) {
         const markerCreated = new this.google.maps.Marker(events[id])
         markerCreated.setMap(this.map)
@@ -319,6 +196,9 @@ export default {
   },
   async mounted () {
     try {
+      // this.$store.commit('setAll', events)
+      // this.allEvents = this.$store.getters.event.all
+      this.allEvents = events
       this.google = await gmapsInit()
       this.geocoder = new this.google.maps.Geocoder()
       const googleMaps = this.$refs.googleMaps
@@ -351,8 +231,5 @@ export default {
   .map {
     width: 99vw;
     height: 59vh;
-  }
-  .not-space {
-    margin-top: -120px;
   }
 </style>

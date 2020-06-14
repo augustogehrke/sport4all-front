@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Wip from './Wip'
+import Wip from '@/components/Wip'
 export default {
   name: 'event-route',
   data () {

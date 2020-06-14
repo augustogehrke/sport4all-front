@@ -1,0 +1,182 @@
+<template>
+  <v-dialog v-model="show" persistent max-width="650px">
+    <v-card>
+      <v-toolbar
+        color="blue darken-1"
+        dark
+        flat
+        prominent
+        class="not-space"
+      >
+        <v-tabs
+          slot="extension"
+          v-model="tabs"
+        >
+          <v-tab
+            :key="1"
+          >
+            Informações
+          </v-tab>
+          <v-tab
+            :key="2"
+          >
+            Chat
+          </v-tab>
+          <v-tab
+            :key="3"
+          >
+            Rota
+          </v-tab>
+          <v-tab
+            :key="4"
+          >
+            Fotos
+          </v-tab>
+        </v-tabs>
+      </v-toolbar>
+      <v-tabs-items v-model="tabs">
+        <v-tab-item>
+          <v-card
+            class="mx-auto"
+          >
+            <event-info :event="event"/>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card
+            class="mx-auto"
+          >
+            <event-chat/>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card
+            class="mx-auto"
+          >
+            <event-route/>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+        <v-card class="mx-auto">
+            <event-photo/>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="blue darken-1"
+          text @click="show = false"
+        >
+          Fechar
+        </v-btn>
+        <v-btn
+          v-show="event.id && myEvent"
+          color="blue darken-1"
+          text @click="deleteEvent"
+        >
+          Excluir
+        </v-btn>
+        <v-btn
+          v-show="event.id && !myEvent"
+          color="blue darken-1"
+          text @click="participateEvent"
+        >
+          Participar
+        </v-btn>
+        <v-btn
+          v-show="!event.id"
+          :disabled="!formValid"
+          color="blue darken-1"
+          text @click="$emit('add-marker')"
+        >
+          Criar
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+import EventInfo from '@/components/events/EventInfo'
+import EventRoute from '@/components/events/EventRoute'
+import EventPhoto from '@/components/events/EventPhoto'
+import EventChat from '@/components/events/EventChat'
+export default {
+  name: 'event',
+  data () {
+    return {
+      tabs: null
+    }
+  },
+  components: {
+    EventInfo,
+    EventRoute,
+    EventPhoto,
+    EventChat
+  },
+  props: {
+    event: {
+      type: Object,
+      default: {
+        id: null,
+        title: null,
+        distance: null,
+        type: null,
+        pace: null,
+        observation: null,
+        date: null,
+        time: null,
+        createdBy: null,
+        position: {
+          lat: null,
+          lng: null
+        },
+        googleMapsMarker: null
+      }
+    },
+    dialog: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    formValid () {
+      if (this.event.title && this.event.distance && this.event.type && this.event.pace && this.event.date && this.event.time) {
+        return true
+      }
+      return false
+    },
+    myEvent () {
+      if (this.$store.getters.user.uid === this.event.createdBy) {
+        return true
+      }
+      return false
+    },
+    show: {
+      get () {
+        return this.dialog
+      },
+      set (value) {
+        this.$emit('update:dialog', value)
+      }
+    }
+  },
+  methods: {
+    async deleteEvent () {
+      this.dialog = false
+      this.event.googleMapsMarker.setMap(null)
+      // TO DO: Deletar da lista allEvents e do banco de dados
+    },
+    async participateEvent () {
+      // TO DO: realizar a lógica
+    }
+  }
+}
+</script>
+
+<style>
+  .not-space {
+    margin-top: -120px;
+  }
+</style>
