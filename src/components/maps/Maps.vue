@@ -29,10 +29,15 @@
             <v-tab
               :key="2"
             >
-              Rota
+              Chat
             </v-tab>
             <v-tab
               :key="3"
+            >
+              Rota
+            </v-tab>
+            <v-tab
+              :key="4"
             >
               Fotos
             </v-tab>
@@ -44,6 +49,13 @@
               class="mx-auto"
             >
               <event-info :event="event"/>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item>
+            <v-card
+              class="mx-auto"
+            >
+              <event-chat/>
             </v-card>
           </v-tab-item>
           <v-tab-item>
@@ -96,13 +108,15 @@ import FiltersMap from './FiltersMap'
 import EventInfo from './EventInfo'
 import EventRoute from './EventRoute'
 import EventPhoto from './EventPhoto'
+import EventChat from './EventChat'
 export default {
   name: 'maps',
   components: {
     FiltersMap,
     EventInfo,
     EventRoute,
-    EventPhoto
+    EventPhoto,
+    EventChat
   },
   data () {
     return {
@@ -326,7 +340,7 @@ export default {
 <style scoped>
   .map {
     width: 99vw;
-    height: 60vh;
+    height: 59vh;
   }
   .not-space {
     margin-top: -120px;
