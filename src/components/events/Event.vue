@@ -40,7 +40,7 @@
             class="mx-auto"
           >
             <event-info :event="event"/>
-            <event-participant :eventId="event.id"/>
+            <event-participant ref="eventParticipant" :participants.sync="participants" :eventId="event.id"/>
           </v-card>
         </v-tab-item>
         <v-tab-item>
@@ -79,11 +79,18 @@
           Excluir
         </v-btn>
         <v-btn
-          v-show="event.id && !myEvent"
+          v-show="event.id && !amParticipant"
           color="blue darken-1"
           text @click="participateEvent"
         >
-          Participar
+          Vou junto :)
+        </v-btn>
+        <v-btn
+          v-show="amParticipant"
+          color="blue darken-1"
+          text @click="notParticipateEvent"
+        >
+          Não vou mais :(
         </v-btn>
         <v-btn
           v-show="!event.id"
@@ -108,7 +115,8 @@ export default {
   name: 'event',
   data () {
     return {
-      tabs: null
+      tabs: null,
+      participants: []
     }
   },
   components: {
@@ -156,6 +164,14 @@ export default {
       }
       return false
     },
+    amParticipant () {
+      for (const participant of this.participants) {
+        if (participant.uid === this.$store.getters.user.uid) {
+          return true
+        }
+        return false
+      }
+    },
     show: {
       get () {
         return this.dialog
@@ -172,7 +188,12 @@ export default {
       // TO DO: Deletar da lista allEvents e do banco de dados
     },
     async participateEvent () {
-      // TO DO: realizar a lógica
+      // TO DO: inserir no banco
+      this.$refs.eventParticipant.addParticipant()
+    },
+    async notParticipateEvent () {
+      // TO DO: remover do banco
+      this.$refs.eventParticipant.removeParticipant()
     }
   }
 }

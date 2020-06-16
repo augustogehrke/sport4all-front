@@ -1,35 +1,56 @@
 <template>
   <v-col cols="12">
     <div>
-      <strong> 6 participantes confirmados </strong><br><br>
+      <strong> {{ participants.length }} participantes confirmados </strong><br><br>
     </div>
-    <v-avatar v-for="(participant, index) in participants" :key="index">
+    <v-avatar v-for="(participant, index) in listParticipants" :key="index">
       <img :src="participant.photoURL">
     </v-avatar>
   </v-col>
 </template>
 
 <script>
-import participants from '@/utils/participants'
 export default {
   name: 'event-participant',
   data () {
     return {
-      participants: []
+    }
+  },
+  computed: {
+    listParticipants: {
+      get () {
+        return this.participants
+      },
+      set (value) {
+        this.$emit('update:participants', value)
+      }
     }
   },
   props: {
-    eventId: null
+    eventId: null,
+    participants: null
   },
   mounted () {
     // TO DO: Buscar os participantes do evento
-    this.participants = participants
   },
   watch: {
     eventId: function (newId, oldId) {
+      this.listParticipants = []
       if (newId) {
         // TO DO: Buscar os participantes do evento
       }
+    }
+  },
+  methods: {
+    addParticipant () {
+      this.listParticipants.push({ uid: this.$store.getters.user.uid, photoURL: this.$store.getters.user.photo })
+    },
+    removeParticipant () {
+      this.listParticipants.map((participant, index) => {
+        if (participant.uid === this.$store.getters.user.uid) {
+          this.listParticipants.splice(index, 1)
+        }
+      })
     }
   }
 }
