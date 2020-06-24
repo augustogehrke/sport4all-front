@@ -17,18 +17,18 @@
           >
             Informações
           </v-tab>
-          <v-tab
+          <!-- <v-tab
             :key="2"
           >
             Chat
-          </v-tab>
+          </v-tab> -->
           <v-tab
-            :key="3"
+            :key="2"
           >
             Rota
           </v-tab>
           <v-tab
-            :key="4"
+            :key="3"
           >
             Fotos
           </v-tab>
@@ -43,13 +43,13 @@
             <event-participant ref="eventParticipant" :participants.sync="participants" :eventId="event.id"/>
           </v-card>
         </v-tab-item>
-        <v-tab-item>
+        <!-- <v-tab-item>
           <v-card
             class="mx-auto"
           >
             <event-chat/>
           </v-card>
-        </v-tab-item>
+        </v-tab-item> -->
         <v-tab-item>
           <v-card
             class="mx-auto"
@@ -104,7 +104,6 @@
     </v-card>
   </v-dialog>
 </template>
-
 <script>
 import EventInfo from '@/components/events/EventInfo'
 import EventRoute from '@/components/events/EventRoute'

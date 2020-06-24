@@ -43,9 +43,11 @@ export default {
   },
   methods: {
     addParticipant () {
+      // TO DO: Adicionar no banco
       this.listParticipants.push({ uid: this.$store.getters.user.uid, photoURL: this.$store.getters.user.photo })
     },
     removeParticipant () {
+      // TO DO: Remover do banco
       this.listParticipants.map((participant, index) => {
         if (participant.uid === this.$store.getters.user.uid) {
           this.listParticipants.splice(index, 1)
