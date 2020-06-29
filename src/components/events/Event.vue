@@ -110,6 +110,7 @@ import EventRoute from '@/components/events/EventRoute'
 import EventPhoto from '@/components/events/EventPhoto'
 import EventChat from '@/components/events/EventChat'
 import EventParticipant from '@/components/events/EventParticipant'
+import api from '@/services/api'
 export default {
   name: 'event',
   data () {
@@ -182,9 +183,14 @@ export default {
   },
   methods: {
     async deleteEvent () {
-      this.dialog = false
-      this.event.googleMapsMarker.setMap(null)
-      // TO DO: Deletar da lista allEvents e do banco de dados
+      try {
+        this.show = false
+        await api.delete(`/events/${this.event.id}`)
+        this.$emit('remove-event-list')
+        this.event.googleMapsMarker.setMap(null)
+      } catch (error) {
+        alert('deu brete')
+      }
     },
     async participateEvent () {
       // TO DO: inserir no banco

@@ -8,7 +8,7 @@
       hide-details="auto"
     />
     <div ref="googleMaps" class="map"/>
-    <event @add-marker="addMarker" :dialog.sync="dialog" :event="event"/>
+    <event @add-marker="addMarker" @remove-event-list="removeEventList" :dialog.sync="dialog" :event="event"/>
   </div>
 </template>
 
@@ -197,6 +197,13 @@ export default {
       for (const event of nEvent) {
         event.googleMapsMarker.setMap(null)
       }
+    },
+    async removeEventList () {
+      this.allEvents.map((event, index) => {
+        if (event.id === this.event.id) {
+          this.allEvents.splice(index, 1)
+        }
+      })
     }
   },
   watch: {
@@ -224,11 +231,9 @@ export default {
       this.map = new this.google.maps.Map(googleMaps, myOptions)
       this.map.addListener('dblclick', this.openModal)
 
-      // Adiciona SM como centro do mapa
       const myPlace = new this.google.maps.LatLng(-29.690079577978533, -53.787586782282276)
       this.map.setCenter(myPlace)
 
-      // Pega a localização atual quando permitido
       this.currentLocation()
 
       this.addEvents()
