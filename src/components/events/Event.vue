@@ -111,6 +111,7 @@ import EventPhoto from '@/components/events/EventPhoto'
 import EventChat from '@/components/events/EventChat'
 import EventParticipant from '@/components/events/EventParticipant'
 import api from '@/services/api'
+import message from '@/utils/message'
 export default {
   name: 'event',
   data () {
@@ -189,7 +190,7 @@ export default {
         this.$emit('remove-event-list')
         this.event.googleMapsMarker.setMap(null)
       } catch (error) {
-        alert('deu brete')
+        message.error()
       }
     },
     async participateEvent () {
