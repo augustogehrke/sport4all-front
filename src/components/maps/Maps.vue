@@ -91,10 +91,21 @@ export default {
 
       this.event.googleMapsMarker = markerCreated
 
-      // TO DO: Fazer a colocação do id automatico
-      this.event.id = 6
+      const response = await api.post('/events', {
+        createdBy: this.event.createdBy,
+        distance: this.event.distance,
+        type: this.event.type,
+        pace: this.event.pace,
+        observation: this.event.observation,
+        date: this.event.date,
+        time: this.event.time,
+        position: this.event.position,
+        title: this.event.title
+      })
+
+      this.event.id = response.data
+
       this.allEvents.push(this.event)
-      // TO DO: Adicionar o evento no banco de dados
       this.resetEvent()
       this.dialog = false
     },
