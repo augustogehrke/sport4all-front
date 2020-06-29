@@ -14,10 +14,10 @@
 
 <script>
 import gmapsInit from '@/utils/gmaps'
-import events from '@/utils/events'
 import styleMaps from '@/utils/styleMaps'
 import FiltersMap from './FiltersMap'
 import Event from '@/components/events/Event'
+import api from '@/services/api'
 export default {
   name: 'maps',
   components: {
@@ -144,7 +144,9 @@ export default {
       this.map.setCenter(myPlace)
     },
     async addEvents () {
+      const events = this.allEvents
       for (const id in events) {
+        events[id].type === 'Pedalada' ? events[id].icon = '../../static/img/bike.png' : events[id].icon = '../../static/img/runner.png'
         const markerCreated = new this.google.maps.Marker(events[id])
         markerCreated.setMap(this.map)
         this.allEvents[id].googleMapsMarker = markerCreated
@@ -196,7 +198,8 @@ export default {
   },
   async mounted () {
     try {
-      this.allEvents = events
+      const { data } = await api.get('/events')
+      this.allEvents = data
       this.google = await gmapsInit()
       this.geocoder = new this.google.maps.Geocoder()
       const googleMaps = this.$refs.googleMaps
