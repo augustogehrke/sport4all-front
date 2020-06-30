@@ -189,6 +189,7 @@ export default {
         await api.delete(`/events/${this.event.id}`)
         this.$emit('remove-event-list')
         this.event.googleMapsMarker.setMap(null)
+        message.success('Evento excluído')
       } catch (error) {
         message.error()
       }

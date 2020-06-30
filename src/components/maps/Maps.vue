@@ -18,6 +18,7 @@ import styleMaps from '@/utils/styleMaps'
 import FiltersMap from './FiltersMap'
 import Event from '@/components/events/Event'
 import api from '@/services/api'
+import message from '@/utils/message'
 export default {
   name: 'maps',
   components: {
@@ -66,14 +67,18 @@ export default {
   },
   methods: {
     async filter () {
-      this.geocoder.geocode({ address: this.city }, (results, status) => {
-        if (status !== 'OK' || !results[0]) {
-          throw new Error(status)
-        }
+      try {
+        this.geocoder.geocode({ address: this.city }, (results, status) => {
+          if (status !== 'OK' || !results[0]) {
+            throw new Error(status)
+          }
 
-        this.map.setCenter(results[0].geometry.location)
-        this.map.fitBounds(results[0].geometry.viewport)
-      })
+          this.map.setCenter(results[0].geometry.location)
+          this.map.fitBounds(results[0].geometry.viewport)
+        })
+      } catch (error) {
+        message.error()
+      }
     },
     async openModal (event) {
       this.resetEvent()
@@ -84,30 +89,34 @@ export default {
       this.dialog = true
     },
     async addMarker () {
-      const markerCreated = new this.google.maps.Marker({ position: this.event.position, icon: this.iconEvent, title: this.event.title })
-      markerCreated.setMap(this.map)
+      try {
+        const response = await api.post('/events', {
+          createdBy: this.event.createdBy,
+          distance: this.event.distance,
+          type: this.event.type,
+          pace: this.event.pace,
+          observation: this.event.observation,
+          date: this.event.date,
+          time: this.event.time,
+          position: this.event.position,
+          title: this.event.title
+        })
 
-      this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+        this.event.id = response.data
 
-      this.event.googleMapsMarker = markerCreated
+        const markerCreated = new this.google.maps.Marker({ position: this.event.position, icon: this.iconEvent, title: this.event.title })
+        markerCreated.setMap(this.map)
 
-      const response = await api.post('/events', {
-        createdBy: this.event.createdBy,
-        distance: this.event.distance,
-        type: this.event.type,
-        pace: this.event.pace,
-        observation: this.event.observation,
-        date: this.event.date,
-        time: this.event.time,
-        position: this.event.position,
-        title: this.event.title
-      })
+        this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
 
-      this.event.id = response.data
+        this.event.googleMapsMarker = markerCreated
 
-      this.allEvents.push(this.event)
-      this.resetEvent()
-      this.dialog = false
+        this.allEvents.push(this.event)
+        this.resetEvent()
+        this.dialog = false
+      } catch (error) {
+        message.error()
+      }
     },
     async resetEvent () {
       this.event = {
@@ -128,74 +137,94 @@ export default {
       }
     },
     async openEvent (googleEvent) {
-      const lat = googleEvent.latLng.lat()
-      const lng = googleEvent.latLng.lng()
-      const event = this.allEvents.find(event => {
-        return event.position.lat === lat && event.position.lng === lng
-      })
+      try {
+        const lat = googleEvent.latLng.lat()
+        const lng = googleEvent.latLng.lng()
+        const event = this.allEvents.find(event => {
+          return event.position.lat === lat && event.position.lng === lng
+        })
 
-      if (event) {
-        this.dialog = true
-        this.event = event
-      } else {
-        alert('Evento não encontrado')
+        if (event) {
+          this.dialog = true
+          this.event = event
+        } else {
+          message.error('Evento não encontrado')
+        }
+      } catch (error) {
+        message.error()
       }
     },
     async currentLocation () {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(this.markCurrentLocation)
-      } else {
-        alert('Geolocalização não suportada nesse navegador.')
+      try {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(this.markCurrentLocation)
+        } else {
+          message.error('Geolocalização não suportada nesse navegador')
+        }
+      } catch (error) {
+        message.error()
       }
     },
     async markCurrentLocation (position) {
-      const lat = position.coords.latitude
-      const lng = position.coords.longitude
-      const myPlace = new this.google.maps.LatLng(lat, lng)
-      this.map.setCenter(myPlace)
+      try {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+        const myPlace = new this.google.maps.LatLng(lat, lng)
+        this.map.setCenter(myPlace)
+      } catch (error) {
+        message.error()
+      }
     },
     async addEvents () {
-      const events = this.allEvents
-      for (const id in events) {
-        events[id].type === 'Pedalada' ? events[id].icon = '../../static/img/bike.png' : events[id].icon = '../../static/img/runner.png'
-        const markerCreated = new this.google.maps.Marker(events[id])
-        markerCreated.setMap(this.map)
-        this.allEvents[id].googleMapsMarker = markerCreated
-        this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+      try {
+        const events = this.allEvents
+        for (const id in events) {
+          events[id].type === 'Pedalada' ? events[id].icon = '../../static/img/bike.png' : events[id].icon = '../../static/img/runner.png'
+          const markerCreated = new this.google.maps.Marker(events[id])
+          markerCreated.setMap(this.map)
+          this.allEvents[id].googleMapsMarker = markerCreated
+          this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
+        }
+      } catch (error) {
+        message.error()
       }
     },
     async applyFilters () {
-      const events = []
-      const nEvent = []
-      for (const event of this.allEvents) {
-        if (this.filters.type === 'Pedalada' || this.filters.type === 'Corrida') {
-          if (event.type !== this.filters.type) {
-            nEvent.push(event)
-            continue
+      try {
+        const events = []
+        const nEvent = []
+        for (const event of this.allEvents) {
+          if (this.filters.type === 'Pedalada' || this.filters.type === 'Corrida') {
+            if (event.type !== this.filters.type) {
+              nEvent.push(event)
+              continue
+            }
           }
-        }
-        if (this.filters.pace === 'Leve' || this.filters.pace === 'Moderado' || this.filters.pace === 'Acelerado') {
-          if (event.pace !== this.filters.pace) {
-            nEvent.push(event)
-            continue
+          if (this.filters.pace === 'Leve' || this.filters.pace === 'Moderado' || this.filters.pace === 'Acelerado') {
+            if (event.pace !== this.filters.pace) {
+              nEvent.push(event)
+              continue
+            }
           }
-        }
-        if (this.filters.distance === '0-6' || this.filters.distance === '7-17' || this.filters.distance === '18-29' || this.filters.distance === '30-54' || this.filters.distance === '54+') {
-          if (event.distance !== this.filters.distance) {
-            nEvent.push(event)
-            continue
+          if (this.filters.distance === '0-6' || this.filters.distance === '7-17' || this.filters.distance === '18-29' || this.filters.distance === '30-54' || this.filters.distance === '54+') {
+            if (event.distance !== this.filters.distance) {
+              nEvent.push(event)
+              continue
+            }
           }
+
+          events.push(event)
         }
 
-        events.push(event)
-      }
+        for (const event of events) {
+          event.googleMapsMarker.setMap(this.map)
+        }
 
-      for (const event of events) {
-        event.googleMapsMarker.setMap(this.map)
-      }
-
-      for (const event of nEvent) {
-        event.googleMapsMarker.setMap(null)
+        for (const event of nEvent) {
+          event.googleMapsMarker.setMap(null)
+        }
+      } catch (error) {
+        message.error()
       }
     },
     async removeEventList () {
@@ -238,7 +267,7 @@ export default {
 
       this.addEvents()
     } catch (error) {
-      console.error(error)
+      message.error()
     }
   }
 }

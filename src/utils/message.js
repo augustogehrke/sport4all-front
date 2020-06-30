@@ -20,7 +20,7 @@ export default new Vue({
   methods: {
     async success (message = null, title = 'Feito campeão') {
       if (!message) {
-        message = 'Operação realizada!'
+        message = 'Operação realizada'
       }
 
       this.$toast.success({
