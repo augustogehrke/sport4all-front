@@ -189,17 +189,15 @@ export default {
         await api.delete(`/events/${this.event.id}`)
         this.$emit('remove-event-list')
         this.event.googleMapsMarker.setMap(null)
-        message.success('Evento excluído')
+        message.success('Evento excluído :)')
       } catch (error) {
         message.error()
       }
     },
     async participateEvent () {
-      // TO DO: inserir no banco
       this.$refs.eventParticipant.addParticipant()
     },
     async notParticipateEvent () {
-      // TO DO: remover do banco
       this.$refs.eventParticipant.removeParticipant()
     }
   }

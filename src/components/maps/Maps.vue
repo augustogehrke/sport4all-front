@@ -148,7 +148,7 @@ export default {
           this.dialog = true
           this.event = event
         } else {
-          message.error('Evento não encontrado')
+          message.error('Evento não encontrado :(')
         }
       } catch (error) {
         message.error()
@@ -159,7 +159,7 @@ export default {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(this.markCurrentLocation)
         } else {
-          message.error('Geolocalização não suportada nesse navegador')
+          message.error('Geolocalização não suportada nesse navegador :(')
         }
       } catch (error) {
         message.error()
