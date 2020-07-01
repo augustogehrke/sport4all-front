@@ -170,8 +170,8 @@ export default {
         if (participant.uid === this.$store.getters.user.uid) {
           return true
         }
-        return false
       }
+      return false
     },
     show: {
       get () {
