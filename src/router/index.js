@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import AppLayout from '@/components/layout/AppLayout'
-import Maps from '@/components/maps/Maps'
-import Sponsors from '@/components/sponsors/Sponsors'
-import Login from '@/components/login/Login'
+
+const AppLayout = () => import('@/components/layout/AppLayout')
+const Maps = () => import('@/components/maps/Maps')
+const Sponsors = () => import('@/components/sponsors/Sponsors')
+const Login = () => import('@/components/login/Login')
 
 Vue.use(Router)
 
