@@ -1,5 +1,5 @@
 <template>
-  <v-content align="center" class="color">
+  <v-main align="center" class="color">
     <v-img
       class="img"
       src="../../../static/img/login.jpg"
@@ -21,7 +21,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-content>
+  </v-main>
 </template>
 
 <script>
