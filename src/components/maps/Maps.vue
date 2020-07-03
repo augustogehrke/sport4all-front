@@ -19,6 +19,7 @@ import FiltersMap from './FiltersMap'
 import Event from '@/components/events/Event'
 import api from '@/services/api'
 import message from '@/utils/message'
+import MarkerClusterer from '@google/markerclusterer'
 export default {
   name: 'maps',
   components: {
@@ -48,6 +49,7 @@ export default {
       idEvent: null,
       google: null,
       map: null,
+      markerClusterer: null,
       geocoder: null,
       filters: {
         pace: null,
@@ -179,13 +181,19 @@ export default {
     async addEvents () {
       try {
         const events = this.allEvents
+        const listMarkers = []
         for (const id in events) {
           events[id].type === 'Pedalada' ? events[id].icon = '../../static/img/bike.png' : events[id].icon = '../../static/img/runner.png'
           const markerCreated = new this.google.maps.Marker(events[id])
           markerCreated.setMap(this.map)
+          listMarkers.push(markerCreated)
           this.allEvents[id].googleMapsMarker = markerCreated
           this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
         }
+
+        this.markerClusterer = new MarkerClusterer(this.map, listMarkers, {
+          imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        })
       } catch (error) {
         message.error()
       }
@@ -248,6 +256,7 @@ export default {
     try {
       const { data } = await api.get('/events')
       this.allEvents = data
+
       this.google = await gmapsInit()
       this.geocoder = new this.google.maps.Geocoder()
       const googleMaps = this.$refs.googleMaps
@@ -257,7 +266,6 @@ export default {
         disableDoubleClickZoom: true,
         styles: styleMaps
       }
-
       this.map = new this.google.maps.Map(googleMaps, myOptions)
       this.map.addListener('dblclick', this.openModal)
 

@@ -12,6 +12,7 @@
     "start": "node build/dev-server.js"
   },
   "dependencies": {
+    "@google/markerclusterer": "^2.0.8",
     "@mdi/font": "^5.3.45",
     "axios": "^0.19.2",
     "cxlt-vue2-toastr": "^1.1.1",
