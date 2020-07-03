@@ -8,9 +8,6 @@
     <v-container>
       <v-row>
         <v-col class="space" cols="12" sm="12">
-          <strong> Unidos por uma paixão! </strong>
-        </v-col>
-        <v-col class="space" cols="12" sm="12">
           <v-btn dark large color="#F2FA44" @click="loginGoogle">
             Google
             <v-icon>mdi-google</v-icon>
@@ -28,6 +25,7 @@
 </template>
 
 <script>
+import message from '@/utils/message'
 export default {
   name: 'login',
   data () {
@@ -47,7 +45,7 @@ export default {
         this.$store.commit('setToken', token)
         this.toHome()
       } catch (error) {
-        // TO DO: mensagem de erro
+        message.error()
       }
     },
     async loginFacebok () {
@@ -60,7 +58,7 @@ export default {
         this.$store.commit('setToken', token)
         this.toHome()
       } catch (error) {
-        // TO DO: mensagem de erro
+        message.error()
       }
     },
     async toHome () {

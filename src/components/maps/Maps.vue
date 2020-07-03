@@ -114,6 +114,7 @@ export default {
         this.allEvents.push(this.event)
         this.resetEvent()
         this.dialog = false
+        message.success('Evento criado')
       } catch (error) {
         message.error()
       }
@@ -275,7 +276,7 @@ export default {
 
 <style scoped>
   .map {
-    width: 99vw;
-    height: 59vh;
+    width: 100vw;
+    height: 63vh;
   }
 </style>

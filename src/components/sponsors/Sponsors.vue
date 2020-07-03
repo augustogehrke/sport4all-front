@@ -1,5 +1,5 @@
 <template>
-  <v-carousel hide-delimiters>
+  <v-carousel class="fundo" hide-delimiters>
     <v-carousel-item
       v-for="(item, i) in items"
       :key="i"
@@ -89,5 +89,9 @@ export default {
 </script>
 
 <style scoped>
+  .fundo {
+    height: 100% !important;
+    background: linear-gradient(32deg, rgba(64,208,125,1) 0%, rgba(32,211,247,1) 100%);
+  }
 
 </style>
