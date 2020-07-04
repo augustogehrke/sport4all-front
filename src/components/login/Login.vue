@@ -2,7 +2,7 @@
   <v-main align="center" class="color">
     <v-img
       class="img"
-      src="../../../static/img/login.jpg"
+      src="../../../static/img/login.png"
       max-width="300"
     ></v-img>
     <v-container>
@@ -77,8 +77,7 @@ export default {
     margin-top: 50px;
   }
   .color {
-    background: rgb(64,208,125);
-    background: linear-gradient(32deg, rgba(64,208,125,1) 0%, rgba(32,211,247,1) 100%);
+    background:white;
     width: 100vw;
     height: 100vh;
   }
