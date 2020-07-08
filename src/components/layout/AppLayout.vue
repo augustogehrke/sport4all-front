@@ -14,6 +14,14 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item link>
+          <v-list-item-action @click="toFaqPage">
+            <v-icon color="black darken-2" large>mdi-beaker-question-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title @click="toFaqPage">Sobre</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link>
           <v-list-item-action @click="toSponsorsPage">
             <v-icon color="orange darken-2" large>mdi-account-star</v-icon>
           </v-list-item-action>
@@ -70,6 +78,9 @@ export default {
     },
     toMapPage () {
       this.$router.push({ name: 'maps' })
+    },
+    toFaqPage () {
+      this.$router.push({ name: 'faq' })
     },
     async logout () {
       this.$firebase.logout()

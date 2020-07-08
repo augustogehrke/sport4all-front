@@ -5,6 +5,8 @@ const AppLayout = () => import('@/components/layout/AppLayout')
 const Maps = () => import('@/components/maps/Maps')
 const Sponsors = () => import('@/components/sponsors/Sponsors')
 const Login = () => import('@/components/login/Login')
+const Faq = () => import('@/components/faq/Faq')
+const Policies = () => import('@/components/policies/PrivacyPolicies')
 
 Vue.use(Router)
 
@@ -15,6 +17,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/politicas-de-privacidade',
+      name: 'policies',
+      component: Policies
     },
     {
       path: '',
@@ -33,6 +40,14 @@ export default new Router({
           path: 'patrocinadores',
           name: 'sponsors',
           component: Sponsors,
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: 'faq',
+          name: 'faq',
+          component: Faq,
           meta: {
             requireAuth: true
           }

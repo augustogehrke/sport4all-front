@@ -21,6 +21,13 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-footer
+      absolute
+    >
+    <v-btn @click="toPolitices">
+      Políticas de privacidade e cookies
+    </v-btn>
+    </v-footer>
   </v-main>
 </template>
 
@@ -63,6 +70,9 @@ export default {
     },
     async toHome () {
       this.$router.push({ name: 'maps' })
+    },
+    async toPolitices () {
+      this.$router.push({ name: 'policies' })
     }
   }
 }
