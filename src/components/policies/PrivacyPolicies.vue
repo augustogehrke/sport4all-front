@@ -33,18 +33,28 @@
     <h3>Mais informações</h3>
     <p>Esperemos que esteja esclarecido e, como mencionado anteriormente, se houver algo que você não tem certeza se precisa ou não, geralmente é mais seguro deixar os cookies ativados, caso interaja com um dos recursos que você usa em nosso site.</p>
     <p>Esta política é efetiva a partir de <strong>Julho</strong>/<strong>2020</strong>.</p>
+    <a class="estilo" @click="toHome">Voltar</a>
   </div>
   </v-app>
 </template>
 
 <script>
 export default {
-  name: 'privacy-policies'
+  name: 'privacy-policies',
+  methods: {
+    async toHome () {
+      this.$router.push({ name: 'maps' })
+    }
+  }
 }
 </script>
 
 <style scoped>
   .space {
     padding: 20px;
+  }
+  .estilo {
+    color: #000;
+    font-size: 20px;
   }
 </style>
