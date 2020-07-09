@@ -72,15 +72,15 @@ export default {
     return {
       items: [
         {
-          img: '../../../static/img/sprintin.jpg',
-          site: 'https://sprintin.com.br',
-          contact: '(55) 99649-3396',
-          linkWhats: 'https://api.whatsapp.com/send?phone=+5555996493396&text=Ol%C3%A1%2C%20',
+          img: '../../../static/img/sponsors/code.png',
+          site: 'https://codeagencia.com.br',
+          contact: '(51) 98458-7605',
+          linkWhats: 'https://api.whatsapp.com/send?phone=+5551984587605&text=Ol%C3%A1%2C%20',
           address: 'Rua José Maurício',
           city: 'Camobi, RS',
           linkLocation: 'https://www.google.com.br/maps/@-29.7028508,-53.7093698,21z',
-          name: 'SprintIN',
-          type: 'Construção de softwares'
+          name: 'Code Agência',
+          type: 'Construção de softwares em geral'
         }
       ]
     }

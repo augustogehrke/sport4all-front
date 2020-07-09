@@ -19,7 +19,7 @@ import FiltersMap from './FiltersMap'
 import Event from '@/components/events/Event'
 import api from '@/services/api'
 import message from '@/utils/message'
-import MarkerClusterer from '@google/markerclusterer'
+// import MarkerClusterer from '@google/markerclusterer'
 export default {
   name: 'maps',
   components: {
@@ -191,9 +191,9 @@ export default {
           this.google.maps.event.addDomListener(markerCreated, 'click', this.openEvent)
         }
 
-        this.markerClusterer = new MarkerClusterer(this.map, listMarkers, {
-          imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-        })
+        // this.markerClusterer = new MarkerClusterer(this.map, listMarkers, {
+        //   imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        // })
       } catch (error) {
         message.error()
       }

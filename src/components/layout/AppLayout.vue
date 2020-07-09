@@ -56,7 +56,7 @@
       color="indigo"
       app
     >
-      <span class="white--text">SprintIN &copy; 2020</span>
+      <span class="white--text"><a class="white--text" href="https://sprintin.com.br" target="blank">SprintIN</a> &copy; 2020</span>
     </v-footer>
   </v-app>
 </template>
